@@ -10,3 +10,4 @@
 - GitHub Pages could not be enabled while the repo was private because the account plan does not support Pages for private repositories, so the repo was switched to public to complete deployment.
 - Enabled GitHub Pages from `gh-pages` branch root.
 - Verified live deployment: `https://guysmileysells.github.io/collage-feedback-pdf-wizard/` returned HTTP 200 with title `Collage and Essay Feedback`; browser PIN test with code `1234` opened the wizard.
+- Updated static PIN hash so the access code is now `5656`; verified locally that `5656` matches and old code `1234` no longer matches before redeploying.
