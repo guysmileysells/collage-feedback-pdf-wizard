@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Collage and Essay Feedback</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #f7f8fb;
+      color: #111827;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    body.locked main {
+      display: none;
+    }
+    .pin-screen {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+    }
+    body:not(.locked) .pin-screen {
+      display: none;
+    }
+    .pin-card {
+      width: min(420px, 100%);
+      padding: 28px;
+      background: #fff;
+      border: 1px solid #d9dee8;
+      border-radius: 8px;
+      box-shadow: 0 10px 28px rgba(17, 24, 39, 0.06);
+    }
+    .pin-title {
+      margin: 0 0 8px;
+      font-size: 24px;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+    .pin-copy {
+      margin: 0 0 18px;
+      color: #4b5563;
+      line-height: 1.4;
+    }
+    .pin-row {
+      display: flex;
+      gap: 10px;
+      align-items: stretch;
+    }
+    .pin-row input {
+      font-size: 22px;
+      letter-spacing: 6px;
+      text-align: center;
+    }
+    .pin-error {
+      min-height: 22px;
+      margin-top: 10px;
+      color: #b42318;
+      font-size: 14px;
+    }
+    main {
+      width: min(920px, 100%);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 32px 22px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 22px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: end;
+      padding-bottom: 18px;
+      border-bottom: 1px solid #d9dee8;
+    }
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+    .counter {
+      color: #5b6472;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    .panel {
+      align-self: start;
+      padding: 28px;
+      border: 1px solid #d9dee8;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 10px 28px rgba(17, 24, 39, 0.06);
+    }
+    .section {
+      margin: 0 0 10px;
+      color: #4b5563;
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .prompt {
+      margin: 0 0 20px;
+      font-size: 25px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+    button, input, textarea { font: inherit; }
+    input, textarea {
+      width: 100%;
+      border: 1px solid #cfd6e3;
+      border-radius: 7px;
+      padding: 13px 14px;
+      color: #111827;
+      background: #fff;
+    }
+    textarea {
+      min-height: 150px;
+      resize: vertical;
+      line-height: 1.4;
+    }
+    .options {
+      display: grid;
+      gap: 10px;
+    }
+    .option {
+      width: 100%;
+      text-align: left;
+      border: 1px solid #cfd6e3;
+      background: #fff;
+      border-radius: 7px;
+      padding: 13px 14px;
+      cursor: pointer;
+    }
+    .option:hover { background: #f9fafb; border-color: #6b7280; }
+    .option.selected {
+      border-color: #1f2937;
+      background: #edf2f7;
+      font-weight: 700;
+    }
+    .progress {
+      height: 8px;
+      overflow: hidden;
+      background: #e5e7eb;
+      border-radius: 999px;
+    }
+    .bar {
+      height: 100%;
+      width: 0%;
+      background: #2563eb;
+      transition: width 160ms ease;
+    }
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    .group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .action {
+      border: 1px solid #111827;
+      background: #111827;
+      color: #fff;
+      border-radius: 7px;
+      padding: 11px 16px;
+      cursor: pointer;
+      min-width: 104px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .secondary {
+      border-color: #cfd6e3;
+      background: #fff;
+      color: #111827;
+    }
+    .action:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+    }
+    .status {
+      min-height: 22px;
+      color: #4b5563;
+      font-size: 14px;
+    }
+    .pdf-preview {
+      width: 100%;
+      height: 620px;
+      border: 1px solid #d9dee8;
+      border-radius: 8px;
+      margin-top: 18px;
+      background: #f3f4f6;
+    }
+    @media (max-width: 640px) {
+      main { padding: 22px 14px; }
+      header { align-items: start; flex-direction: column; }
+      .counter { white-space: normal; }
+      .panel { padding: 20px; }
+      .prompt { font-size: 21px; }
+      .group, .controls { width: 100%; }
+      .action { flex: 1; }
+    }
+  </style>
+</head>
+<body class="locked">
+  <section class="pin-screen" aria-label="PIN access">
+    <form class="pin-card" id="pin-form">
+      <h1 class="pin-title">Collage Feedback PDF Wizard</h1>
+      <p class="pin-copy">Enter the 4-digit access code to open the form.</p>
+      <div class="pin-row">
+        <input id="pin-input" inputmode="numeric" autocomplete="one-time-code" maxlength="4" pattern="[0-9]{4}" aria-label="4-digit access code">
+        <button class="action" type="submit">Open</button>
+      </div>
+      <div class="pin-error" id="pin-error"></div>
+    </form>
+  </section>
+  <main>
+    <header>
+      <h1>Collage and Essay Feedback</h1>
+      <div class="counter" id="counter"></div>
+    </header>
+    <section class="panel" id="panel">
+      <p class="section" id="section"></p>
+      <h2 class="prompt" id="prompt"></h2>
+      <div id="answer"></div>
+    </section>
+    <footer>
+      <div class="progress"><div class="bar" id="bar"></div></div>
+      <div class="controls">
+        <div class="group">
+          <button class="action secondary" id="previous" type="button">Back</button>
+          <button class="action secondary" id="clear" type="button">Clear</button>
+        </div>
+        <div class="group">
+          <div class="status" id="status"></div>
+          <button class="action" id="next" type="button">Next</button>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    // Change this before publishing. Default access code: 1234.
+    // This is a simple static-site gate for casual access control, not a high-security login.
+    const ACCESS_CODE_HASH = "fdc422fd9c18ac0cc96b2422af9f9ed8";
+
+    function simpleHash(value) {
+      let hash = 2166136261;
+      for (let i = 0; i < value.length; i++) {
+        hash ^= value.charCodeAt(i);
+        hash = Math.imul(hash, 16777619);
+      }
+      return `${(hash >>> 0).toString(16).padStart(8, "0")}${(Math.imul(hash ^ 0x9e3779b9, 16777619) >>> 0).toString(16).padStart(8, "0")}${(Math.imul(hash ^ 0x85ebca6b, 16777619) >>> 0).toString(16).padStart(8, "0")}${(Math.imul(hash ^ 0xc2b2ae35, 16777619) >>> 0).toString(16).padStart(8, "0")}`;
+    }
+    function unlock() {
+      document.body.classList.remove("locked");
+      sessionStorage.setItem("collageFeedbackUnlocked", "1");
+    }
+    const pinForm = document.getElementById("pin-form");
+    const pinInput = document.getElementById("pin-input");
+    const pinError = document.getElementById("pin-error");
+    if (sessionStorage.getItem("collageFeedbackUnlocked") === "1") {
+      unlock();
+    } else {
+      pinInput.focus();
+    }
+    pinForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const pin = pinInput.value.trim();
+      if (/^\d{4}$/.test(pin) && simpleHash(pin) === ACCESS_CODE_HASH) {
+        pinError.textContent = "";
+        unlock();
+      } else {
+        pinInput.value = "";
+        pinInput.focus();
+        pinError.textContent = "That code did not work.";
+      }
+    });
+
+    const rubric = ["Weak", "Developing", "Satisfactory", "Strong", "Excellent"];
+    const checklist = ["Included", "Missing", "Needs Improvement", "Not Applicable"];
+    const grades = ["A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D", "F", "Incomplete"];
+    const questions = [
+      ["student_name", "Student name", "Submission details", "text"],
+      ["neighborhood", "Neighborhood", "Submission details", "text"],
+      ["reviewer", "Reviewer", "Submission details", "text"],
+      ["review_date", "Review date", "Submission details", "text"],
+      ["overview_of_neighborhood", "Overview of neighborhood", "Required elements", "choice", checklist],
+      ["the_feel", "The feel", "Required elements", "choice", checklist],
+      ["housing", "Housing", "Required elements", "choice", checklist],
+      ["commercial_districts_and_economy", "Commercial districts and economy", "Required elements", "choice", checklist],
+      ["people_and_community", "People and Community", "Required elements", "choice", checklist],
+      ["transportation", "Transportation", "Required elements", "choice", checklist],
+      ["public_space_and_art", "Public space and Art", "Required elements", "choice", checklist],
+      ["two_key_problems", "2 key problems", "Required elements", "choice", ["Yes", "No"]],
+      ["vision_for_the_future", "Vision for the future", "Required elements", "choice", checklist],
+      ["birdseye_map", "Map of neighborhood from bird's eye view", "Required elements", "choice", checklist],
+      ["zoning_map", "Zoning map", "Required elements", "choice", checklist],
+      ["selfie_in_neighborhood", "A selfie of you in the neighborhood", "Required elements", "choice", checklist],
+      ["ten_pictures_or_videos", "At least 10 pictures or videos taken by you", "Required elements", "choice", checklist],
+      ["two_statistics_or_data", "At least two statistics or pieces of data", "Required elements", "choice", checklist],
+      ["works_cited_statistics", "Works cited list for your statistics", "Required elements", "choice", checklist],
+      ["multiple_pages", "Multiple pages", "Required elements", "choice", checklist],
+      ["collage_thoughtful_overview", "2) Collage conveys a thoughtful and informative overview", "Collage rubric", "choice", rubric],
+      ["collage_design_quality", "3) Quality of Design Work", "Collage rubric", "choice", rubric],
+      ["collage_grade", "Collage grade", "Collage rubric", "choice", grades],
+      ["collage_comments", "Collage feedback comments", "Collage rubric", "longtext"],
+      ["essay_thesis", "THESIS STATEMENT", "In-class essay", "choice", rubric],
+      ["essay_intro_conclusion", "STRUCTURED INTRODUCTORY AND CONCLUDING PARAGRAPH", "In-class essay", "choice", rubric],
+      ["essay_reading_interpretation", "INTERPRETATION OF READING", "In-class essay", "choice", rubric],
+      ["essay_citations", "IN-TEXT CITATIONS", "In-class essay", "choice", rubric],
+      ["essay_analysis", "ANALYSIS", "In-class essay", "choice", rubric],
+      ["essay_grade", "Essay grade", "In-class essay", "choice", grades],
+      ["essay_comments", "In-class essay comments", "In-class essay", "longtext"],
+    ].map(([key, prompt, section, kind, options]) => ({key, prompt, section, kind, options: options || []}));
+
+    const answers = {};
+    let index = 0;
+    const counter = document.getElementById("counter");
+    const section = document.getElementById("section");
+    const prompt = document.getElementById("prompt");
+    const answer = document.getElementById("answer");
+    const previous = document.getElementById("previous");
+    const clear = document.getElementById("clear");
+    const next = document.getElementById("next");
+    const status = document.getElementById("status");
+    const bar = document.getElementById("bar");
+
+    function current() { return questions[index]; }
+    function setStatus(text) { status.textContent = text || ""; }
+    function defaultValue(q) { return q.key === "review_date" ? new Date().toISOString().slice(0, 10) : ""; }
+    function fieldValue() {
+      const q = current();
+      if (q.kind === "choice") return answers[q.key] || "";
+      const field = document.getElementById("field");
+      return field ? field.value.trim() : "";
+    }
+    function saveCurrent() {
+      const q = current();
+      const value = fieldValue();
+      if (value) answers[q.key] = value;
+      else delete answers[q.key];
+    }
+    function render() {
+      const q = current();
+      counter.textContent = `Question ${index + 1} of ${questions.length}`;
+      section.textContent = q.section;
+      prompt.textContent = q.prompt;
+      previous.disabled = index === 0;
+      next.textContent = index === questions.length - 1 ? "Download PDF" : "Next";
+      bar.style.width = `${((index + 1) / questions.length) * 100}%`;
+      answer.innerHTML = "";
+      setStatus("");
+      if (q.kind === "choice") {
+        const wrap = document.createElement("div");
+        wrap.className = "options";
+        q.options.forEach((option) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "option";
+          button.textContent = option;
+          if (answers[q.key] === option) button.classList.add("selected");
+          button.addEventListener("click", () => { answers[q.key] = option; render(); });
+          wrap.appendChild(button);
+        });
+        answer.appendChild(wrap);
+      } else {
+        const field = document.createElement(q.kind === "longtext" ? "textarea" : "input");
+        field.id = "field";
+        if (q.kind !== "longtext") field.type = "text";
+        field.value = answers[q.key] || defaultValue(q);
+        field.placeholder = q.kind === "longtext" ? "Type feedback comments here" : "";
+        answer.appendChild(field);
+        field.focus();
+        if (field.select) field.select();
+      }
+    }
+
+    function ascii(text) {
+      return String(text || "")
+        .replace(/[‘’]/g, "'").replace(/[“”]/g, '"').replace(/[–—]/g, "-")
+        .replace(/[^\x20-\x7E\n]/g, "");
+    }
+    function escPdf(text) {
+      return ascii(text).replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
+    }
+    function wrap(text, maxChars) {
+      const words = ascii(text).split(/\s+/).filter(Boolean);
+      const lines = [];
+      let line = "";
+      words.forEach((word) => {
+        const test = line ? `${line} ${word}` : word;
+        if (test.length > maxChars && line) {
+          lines.push(line);
+          line = word;
+        } else {
+          line = test;
+        }
+      });
+      if (line) lines.push(line);
+      return lines.length ? lines : [""];
+    }
+    function makePdf() {
+      const pageW = 612, pageH = 792, margin = 54;
+      const contentW = pageW - margin * 2;
+      const pages = [];
+      let ops = [], y = 742;
+
+      function newPage() {
+        if (ops.length) pages.push(ops.join("\n"));
+        ops = [];
+        y = 742;
+      }
+      function ensure(space) { if (y - space < 48) newPage(); }
+      function op(value) { ops.push(value); }
+      function drawText(line, x, yy, size = 10, bold = false) {
+        op(`BT /${bold ? "F2" : "F1"} ${size} Tf ${x} ${yy} Td (${escPdf(line)}) Tj ET`);
+      }
+      function line(x1, y1, x2, y2, width = 0.6) {
+        op(`${width} w ${x1} ${y1} m ${x2} ${y2} l S`);
+      }
+      function rect(x, yy, w, h, fill = false) {
+        if (fill) op(`q 0.90 0.91 0.93 rg ${x} ${yy} ${w} ${h} re f Q`);
+        op(`0.65 w ${x} ${yy} ${w} ${h} re S`);
+      }
+      function drawWrapped(value, x, yy, maxChars, size = 9, bold = false, leading = 12) {
+        const lines = String(value || "").split("\n").flatMap(part => wrap(part, maxChars));
+        lines.forEach((part, i) => drawText(part, x, yy - (i * leading), size, bold));
+        return lines.length * leading;
+      }
+      function pageFooter(pageNo) {
+        drawText(`Page ${pageNo}`, pageW - margin - 38, 28, 8, false);
+      }
+      function title(value) {
+        drawText(value, 226, y, 18, true);
+        y -= 30;
+      }
+      function infoLine() {
+        drawText(`Student: ${answers.student_name || ""}`, margin, y, 9, true);
+        drawText(`Neighborhood: ${answers.neighborhood || ""}`, margin + 235, y, 9, true);
+        y -= 14;
+        drawText(`Reviewer: ${answers.reviewer || ""}`, margin, y, 9, true);
+        drawText(`Date: ${answers.review_date || ""}`, margin + 235, y, 9, true);
+        y -= 20;
+      }
+      function sectionHeading(value) {
+        ensure(26);
+        y -= 4;
+        drawText(value, margin, y, 12, true);
+        y -= 16;
+      }
+      function tableRow(label, value, header = false) {
+        const h = header ? 22 : 18;
+        ensure(h + 2);
+        const top = y;
+        rect(margin, top - h, 385, h, header);
+        rect(margin + 385, top - h, contentW - 385, h, header);
+        drawWrapped(label, margin + 6, top - 13, 61, 9, header);
+        drawWrapped(value, margin + 391, top - 13, 20, 9, header);
+        y -= h;
+      }
+      function scoreBlock(numberedPrompt, score) {
+        const promptLines = wrap(numberedPrompt, 82);
+        const blockH = 18 + promptLines.length * 11 + 28;
+        ensure(blockH);
+        promptLines.forEach((part) => {
+          drawText(part, margin, y, 10, true);
+          y -= 11;
+        });
+        y -= 4;
+        drawText("Weak", margin, y, 9, false);
+        drawText("Strong", margin + contentW - 35, y, 9, false);
+        line(margin + 46, y + 3, margin + contentW - 48, y + 3, 0.5);
+        const cleanScore = score || "";
+        if (cleanScore) {
+          drawText(`Score: ${cleanScore}`, margin + 230, y + 8, 9, true);
+        }
+        y -= 22;
+      }
+      function gradeLine(label, value) {
+        ensure(24);
+        drawText(`${label}:`, margin, y, 11, true);
+        line(margin + 45, y + 2, margin + 180, y + 2, 0.6);
+        if (value) drawText(value, margin + 58, y + 6, 11, true);
+        y -= 22;
+      }
+      function commentBox(label, value, height = 58) {
+        ensure(height + 24);
+        drawText(`${label}:`, margin, y, 10, true);
+        y -= 8;
+        rect(margin, y - height, contentW, height, false);
+        drawWrapped(value || "", margin + 8, y - 16, 92, 9, false);
+        y -= height + 12;
+      }
+
+      title("Collage Feedback");
+      infoLine();
+      sectionHeading("1) Required Elements");
+      tableRow("Required Elements", "Included", true);
+      questions.filter(q => q.section === "Required elements").forEach(q => {
+        tableRow(q.prompt, answers[q.key] || "");
+      });
+
+      y -= 12;
+      scoreBlock(
+        "2) Collage conveys a thoughtful and informative overview of your neighbourhood through the images included and the way they have been curated (carefully gathered, sifted, chosen, and organized). It should tell a story through the images and information included.",
+        answers.collage_thoughtful_overview
+      );
+      scoreBlock("3) Quality of Design Work", answers.collage_design_quality);
+      gradeLine("Grade", answers.collage_grade);
+      commentBox("Collage Feedback Comments", answers.collage_comments, 64);
+      pageFooter(1);
+
+      newPage();
+      title("In-class Essay");
+      scoreBlock("THESIS STATEMENT", answers.essay_thesis);
+      scoreBlock("STRUCTURED INTRODUCTORY AND CONCLUDING PARAGRAPH", answers.essay_intro_conclusion);
+      scoreBlock("INTERPRETATION OF READING (required elements, depth of engagement etc.)", answers.essay_reading_interpretation);
+      scoreBlock("IN-TEXT CITATIONS:", answers.essay_citations);
+      scoreBlock("ANALYSIS (Level of sophistication, depth of engagement, connection to collage and 29 questions exercise)", answers.essay_analysis);
+      gradeLine("Grade", answers.essay_grade);
+      commentBox("In-class Essay Comments", answers.essay_comments, 86);
+      pageFooter(2);
+      pages.push(ops.join("\n"));
+
+      const objects = [];
+      const font1 = objects.push("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>");
+      const font2 = objects.push("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>");
+      const pageObjIds = [];
+      pages.forEach((content) => {
+        const stream = `<< /Length ${content.length} >>\nstream\n${content}\nendstream`;
+        const contentId = objects.push(stream);
+        const pageId = objects.push(`<< /Type /Page /Parent 0 0 R /MediaBox [0 0 ${pageW} ${pageH}] /Resources << /Font << /F1 ${font1} 0 R /F2 ${font2} 0 R >> >> /Contents ${contentId} 0 R >>`);
+        pageObjIds.push(pageId);
+      });
+      const pagesId = objects.push(`<< /Type /Pages /Kids [${pageObjIds.map(id => `${id} 0 R`).join(" ")}] /Count ${pageObjIds.length} >>`);
+      pageObjIds.forEach((id) => {
+        objects[id - 1] = objects[id - 1].replace("/Parent 0 0 R", `/Parent ${pagesId} 0 R`);
+      });
+      const catalogId = objects.push(`<< /Type /Catalog /Pages ${pagesId} 0 R >>`);
+      let pdf = "%PDF-1.4\n";
+      const offsets = [0];
+      objects.forEach((obj, i) => {
+        offsets.push(pdf.length);
+        pdf += `${i + 1} 0 obj\n${obj}\nendobj\n`;
+      });
+      const xref = pdf.length;
+      pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+      offsets.slice(1).forEach(offset => { pdf += `${String(offset).padStart(10, "0")} 00000 n \n`; });
+      pdf += `trailer\n<< /Size ${objects.length + 1} /Root ${catalogId} 0 R >>\nstartxref\n${xref}\n%%EOF`;
+      return new Blob([pdf], {type: "application/pdf"});
+    }
+    function finish() {
+      saveCurrent();
+      const blob = makePdf();
+      const url = URL.createObjectURL(blob);
+      const name = `${(answers.student_name || "Collage_Feedback").replace(/[^A-Za-z0-9]+/g, "_")}_Feedback.pdf`;
+      document.getElementById("panel").innerHTML = `
+        <p class="section">Complete</p>
+        <h2 class="prompt">Your PDF is ready.</h2>
+        <div class="group" style="margin-bottom: 12px;">
+          <a class="action" href="${url}" target="_blank" rel="noopener">Open PDF</a>
+          <a class="action secondary" href="${url}" download="${name}">Download PDF</a>
+        </div>
+        <iframe class="pdf-preview" src="${url}" title="Generated PDF preview"></iframe>
+      `;
+      counter.textContent = "Finished";
+      next.style.display = "none";
+      previous.disabled = true;
+      clear.disabled = true;
+      setStatus("");
+    }
+    previous.addEventListener("click", () => { saveCurrent(); if (index > 0) { index--; render(); } });
+    clear.addEventListener("click", () => { delete answers[current().key]; render(); });
+    next.addEventListener("click", () => {
+      if (!fieldValue()) { setStatus("Answer this question to continue."); return; }
+      saveCurrent();
+      if (index === questions.length - 1) finish();
+      else { index++; render(); }
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && current().kind !== "longtext") {
+        event.preventDefault();
+        next.click();
+      }
+    });
+    render();
+  </script>
+</body>
+</html>
