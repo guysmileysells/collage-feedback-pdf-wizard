@@ -287,12 +287,8 @@
 
     const rubric = ["Weak", "Developing", "Satisfactory", "Strong", "Excellent"];
     const checklist = ["Included", "Missing", "Needs Improvement", "Not Applicable"];
-    const grades = ["A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D", "F", "Incomplete"];
     const questions = [
       ["student_name", "Student name", "Submission details", "text"],
-      ["neighborhood", "Neighborhood", "Submission details", "text"],
-      ["reviewer", "Reviewer", "Submission details", "text"],
-      ["review_date", "Review date", "Submission details", "text"],
       ["overview_of_neighborhood", "Overview of neighborhood", "Required elements", "choice", checklist],
       ["the_feel", "The feel", "Required elements", "choice", checklist],
       ["housing", "Housing", "Required elements", "choice", checklist],
@@ -311,14 +307,14 @@
       ["multiple_pages", "Multiple pages", "Required elements", "choice", checklist],
       ["collage_thoughtful_overview", "2) Collage conveys a thoughtful and informative overview", "Collage rubric", "choice", rubric],
       ["collage_design_quality", "3) Quality of Design Work", "Collage rubric", "choice", rubric],
-      ["collage_grade", "Collage grade", "Collage rubric", "choice", grades],
+      ["collage_grade", "Collage percentage grade", "Collage rubric", "percentage"],
       ["collage_comments", "Collage feedback comments", "Collage rubric", "longtext"],
       ["essay_thesis", "THESIS STATEMENT", "In-class essay", "choice", rubric],
       ["essay_intro_conclusion", "STRUCTURED INTRODUCTORY AND CONCLUDING PARAGRAPH", "In-class essay", "choice", rubric],
       ["essay_reading_interpretation", "INTERPRETATION OF READING", "In-class essay", "choice", rubric],
       ["essay_citations", "IN-TEXT CITATIONS", "In-class essay", "choice", rubric],
       ["essay_analysis", "ANALYSIS", "In-class essay", "choice", rubric],
-      ["essay_grade", "Essay grade", "In-class essay", "choice", grades],
+      ["essay_grade", "Essay percentage grade", "In-class essay", "percentage"],
       ["essay_comments", "In-class essay comments", "In-class essay", "longtext"],
     ].map(([key, prompt, section, kind, options]) => ({key, prompt, section, kind, options: options || []}));
 
@@ -336,7 +332,7 @@
 
     function current() { return questions[index]; }
     function setStatus(text) { status.textContent = text || ""; }
-    function defaultValue(q) { return q.key === "review_date" ? new Date().toISOString().slice(0, 10) : ""; }
+    function defaultValue() { return ""; }
     function fieldValue() {
       const q = current();
       if (q.kind === "choice") return answers[q.key] || "";
@@ -375,7 +371,15 @@
       } else {
         const field = document.createElement(q.kind === "longtext" ? "textarea" : "input");
         field.id = "field";
-        if (q.kind !== "longtext") field.type = "text";
+        if (q.kind === "percentage") {
+          field.type = "number";
+          field.min = "0";
+          field.max = "100";
+          field.step = "1";
+          field.inputMode = "numeric";
+        } else if (q.kind !== "longtext") {
+          field.type = "text";
+        }
         field.value = answers[q.key] || defaultValue(q);
         field.placeholder = q.kind === "longtext" ? "Type feedback comments here" : "";
         answer.appendChild(field);
@@ -445,10 +449,6 @@
       }
       function infoLine() {
         drawText(`Student: ${answers.student_name || ""}`, margin, y, 9, true);
-        drawText(`Neighborhood: ${answers.neighborhood || ""}`, margin + 235, y, 9, true);
-        y -= 14;
-        drawText(`Reviewer: ${answers.reviewer || ""}`, margin, y, 9, true);
-        drawText(`Date: ${answers.review_date || ""}`, margin + 235, y, 9, true);
         y -= 20;
       }
       function sectionHeading(value) {
@@ -487,9 +487,7 @@
       }
       function gradeLine(label, value) {
         ensure(24);
-        drawText(`${label}:`, margin, y, 11, true);
-        line(margin + 45, y + 2, margin + 180, y + 2, 0.6);
-        if (value) drawText(value, margin + 58, y + 6, 11, true);
+        drawText(value ? `${label}: ${value}%` : `${label}:`, margin, y, 11, true);
         y -= 22;
       }
       function commentBox(label, value, height = 58) {
@@ -515,7 +513,7 @@
         answers.collage_thoughtful_overview
       );
       scoreBlock("3) Quality of Design Work", answers.collage_design_quality);
-      gradeLine("Grade", answers.collage_grade);
+      gradeLine("Percentage grade", answers.collage_grade);
       commentBox("Collage Feedback Comments", answers.collage_comments, 64);
       pageFooter(1);
 
@@ -526,7 +524,7 @@
       scoreBlock("INTERPRETATION OF READING (required elements, depth of engagement etc.)", answers.essay_reading_interpretation);
       scoreBlock("IN-TEXT CITATIONS:", answers.essay_citations);
       scoreBlock("ANALYSIS (Level of sophistication, depth of engagement, connection to collage and 29 questions exercise)", answers.essay_analysis);
-      gradeLine("Grade", answers.essay_grade);
+      gradeLine("Percentage grade", answers.essay_grade);
       commentBox("In-class Essay Comments", answers.essay_comments, 86);
       pageFooter(2);
       pages.push(ops.join("\n"));
@@ -581,7 +579,13 @@
     previous.addEventListener("click", () => { saveCurrent(); if (index > 0) { index--; render(); } });
     clear.addEventListener("click", () => { delete answers[current().key]; render(); });
     next.addEventListener("click", () => {
-      if (!fieldValue()) { setStatus("Answer this question to continue."); return; }
+      const value = fieldValue();
+      if (!value) { setStatus("Answer this question to continue."); return; }
+      const q = current();
+      if (q.kind === "percentage" && (!/^\d+$/.test(value) || Number(value) < 0 || Number(value) > 100)) {
+        setStatus("Enter a whole-number percentage from 0 to 100.");
+        return;
+      }
       saveCurrent();
       if (index === questions.length - 1) finish();
       else { index++; render(); }
