@@ -371,6 +371,7 @@ This is consistent with the current public deployment but not with an expectatio
 - Long comments do not overlap or disappear.
 - Comment labels, boxes, text, and following sections have clear vertical spacing.
 - Slider markers cross the Weak-to-Strong line and do not appear as numbers or text above it.
+- Collage rubric item `2)` has a 24-point separation from the preceding required-elements content.
 - Student names with accents are tested and the current ASCII limitation is documented or fixed.
 - Mobile-width layout remains usable.
 

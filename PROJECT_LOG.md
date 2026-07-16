@@ -23,3 +23,4 @@
 - Simplified the Collage feedback comments and In-class essay comments steps to show only the optional comments box. Both steps can be left blank, and blank boxes are omitted from the PDF.
 - Corrected PDF slider markers to draw as vertical strokes crossing the Weak-to-Strong line rather than text glyphs sitting above it.
 - Increased PDF comment spacing: larger label-to-box gaps, more internal padding, 14-point line spacing, taller dynamic boxes, and larger separation after each comment block.
+- Increased the PDF gap before collage rubric item `2)` from 12 to 24 points so it is more clearly separated from the required-elements section.

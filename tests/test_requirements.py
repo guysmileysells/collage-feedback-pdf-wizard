@@ -72,6 +72,11 @@ def test_pdf_comments_have_readable_vertical_spacing():
     assert 'y -= height + blockGap' in HTML
 
 
+def test_pdf_has_extra_space_before_collage_rubric_item_two():
+    assert 'const collageRubricGap = 24' in HTML
+    assert 'y -= collageRubricGap' in HTML
+
+
 def test_optional_comments_are_saved_for_every_question_except_name():
     assert 'const comments = {}' in HTML
     assert 'q.key !== "student_name"' in HTML

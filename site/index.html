@@ -485,6 +485,7 @@
       const labelGap = 16;
       const textTopPadding = 20;
       const blockGap = 20;
+      const collageRubricGap = 24;
       const pages = [];
       let ops = [], y = 742;
 
@@ -595,7 +596,7 @@
         optionalComment(q.prompt, comments[q.key]);
       });
 
-      y -= 12;
+      y -= collageRubricGap;
       scoreBlock(
         "2) Collage conveys a thoughtful and informative overview of your neighbourhood through the images included and the way they have been curated (carefully gathered, sifted, chosen, and organized). It should tell a story through the images and information included.",
         answers.collage_thoughtful_overview
