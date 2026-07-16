@@ -44,11 +44,11 @@ Verified on 2026-07-15:
 1. User opens the hosted site.
 2. A four-digit PIN screen appears.
 3. Correct code unlocks the wizard for the current browser tab/session using `sessionStorage`.
-4. Reviewer moves through 28 required questions, one at a time.
-5. Text inputs, long-form comments, button selections, five-position Weak-to-Strong sliders, and optional per-question comments are held in memory.
+4. Reviewer moves through 28 questions, one at a time; the two dedicated feedback-comment steps are optional.
+5. Text inputs, button selections, ten-position Weak-to-Strong sliders, and optional per-question comments are held in memory.
 6. `Back` returns to the previous question while retaining answers.
 7. `Clear` removes the answer to the current question.
-8. `Next` refuses to advance if the current answer is blank.
+8. `Next` refuses to advance if a required answer is blank; the two dedicated feedback-comment steps may be blank.
 9. On Question 28, the button label becomes `Download PDF`.
 10. The browser constructs a PDF locally and shows:
     - Open PDF
@@ -62,7 +62,7 @@ Every question except Student name also displays an optional comments box. These
 
 ## 5. Complete rubric/question inventory
 
-There are **28 required questions** after the owner-approved July 15 revision.
+There are **28 questions** after the owner-approved July 15 revision: 26 required and two optional feedback-comment steps.
 
 ### A. Submission details — Question 1
 
@@ -98,14 +98,14 @@ Questions:
 
 ### C. Collage rubric — Questions 18–21
 
-Questions 18–19 use a five-position slider labelled **Weak** at the low end and **Strong** at the high end. The PDF records the selected score out of 5.
+Questions 18–19 use a ten-position slider labelled **Weak** at the low end and **Strong** at the high end. The PDF shows the selection as a marker on that line without printing a number.
 
 Questions:
 
 18. `2) Collage conveys a thoughtful and informative overview`
 19. `3) Quality of Design Work`
 20. Collage percentage grade — required whole number from 0 to 100
-21. Collage feedback comments — long-form text
+21. Collage feedback comments — optional comments box only; may be left blank
 
 The generated PDF expands Question 18 to the fuller prompt:
 
@@ -113,7 +113,7 @@ The generated PDF expands Question 18 to the fuller prompt:
 
 ### D. In-class essay — Questions 22–28
 
-Questions 22–26 use the same five-position Weak-to-Strong slider and PDF score out of 5.
+Questions 22–26 use the same ten-position Weak-to-Strong slider and non-numeric PDF marker.
 
 Questions:
 
@@ -123,7 +123,7 @@ Questions:
 25. IN-TEXT CITATIONS
 26. ANALYSIS
 27. Essay percentage grade — required whole number from 0 to 100
-28. In-class essay comments — long-form text
+28. In-class essay comments — optional comments box only; may be left blank
 
 **Source-count history:** the source originally contained 31 entries. On 2026-07-15, the owner explicitly removed Neighborhood, Reviewer, and Review date, leaving 28 entries.
 

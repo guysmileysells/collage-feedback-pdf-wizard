@@ -329,14 +329,14 @@
       ["collage_thoughtful_overview", "2) Collage conveys a thoughtful and informative overview", "Collage rubric", "scale"],
       ["collage_design_quality", "3) Quality of Design Work", "Collage rubric", "scale"],
       ["collage_grade", "Collage percentage grade", "Collage rubric", "percentage"],
-      ["collage_comments", "Collage feedback comments", "Collage rubric", "longtext"],
+      ["collage_comments", "Collage feedback comments", "Collage rubric", "comments"],
       ["essay_thesis", "THESIS STATEMENT", "In-class essay", "scale"],
       ["essay_intro_conclusion", "STRUCTURED INTRODUCTORY AND CONCLUDING PARAGRAPH", "In-class essay", "scale"],
       ["essay_reading_interpretation", "INTERPRETATION OF READING", "In-class essay", "scale"],
       ["essay_citations", "IN-TEXT CITATIONS", "In-class essay", "scale"],
       ["essay_analysis", "ANALYSIS", "In-class essay", "scale"],
       ["essay_grade", "Essay percentage grade", "In-class essay", "percentage"],
-      ["essay_comments", "In-class essay comments", "In-class essay", "longtext"],
+      ["essay_comments", "In-class essay comments", "In-class essay", "comments"],
     ].map(([key, prompt, section, kind, options]) => ({key, prompt, section, kind, options: options || []}));
 
     const answers = {};
@@ -358,13 +358,15 @@
     function fieldValue() {
       const q = current();
       if (q.kind === "choice" || q.kind === "scale") return answers[q.key] || "";
+      if (q.kind === "comments") return document.getElementById("optional-comment")?.value.trim() || "";
       const field = document.getElementById("field");
       return field ? field.value.trim() : "";
     }
     function saveCurrent() {
       const q = current();
       const value = fieldValue();
-      if (value) answers[q.key] = value;
+      if (q.kind === "comments") delete answers[q.key];
+      else if (value) answers[q.key] = value;
       else delete answers[q.key];
       const comment = document.getElementById("optional-comment");
       if (comment && comment.value.trim()) comments[q.key] = comment.value.trim();
@@ -405,23 +407,23 @@
         slider.id = "scale";
         slider.type = "range";
         slider.min = "1";
-        slider.max = "5";
+        slider.max = "10";
         slider.step = "1";
-        slider.value = answers[q.key] || "3";
+        slider.value = answers[q.key] || "5";
         answers[q.key] = slider.value;
         const labels = document.createElement("div");
         labels.className = "scale-labels";
         labels.innerHTML = "<span>Weak</span><span>Strong</span>";
         const value = document.createElement("div");
         value.className = "scale-value";
-        value.textContent = `${slider.value} / 5`;
+        value.textContent = `${slider.value} / 10`;
         slider.addEventListener("input", () => {
           answers[q.key] = slider.value;
-          value.textContent = `${slider.value} / 5`;
+          value.textContent = `${slider.value} / 10`;
         });
         wrap.append(slider, labels, value);
         answer.appendChild(wrap);
-      } else {
+      } else if (q.kind !== "comments") {
         const field = document.createElement(q.kind === "longtext" ? "textarea" : "input");
         field.id = "field";
         if (q.kind === "percentage") {
@@ -542,10 +544,13 @@
         y -= 4;
         drawText("Weak", margin, y, 9, false);
         drawText("Strong", margin + contentW - 35, y, 9, false);
-        line(margin + 46, y + 3, margin + contentW - 48, y + 3, 0.5);
+        const startX = margin + 46;
+        const endX = margin + contentW - 48;
+        line(startX, y + 3, endX, y + 3, 0.5);
         const cleanScore = score || "";
         if (cleanScore) {
-          drawText(`Score: ${cleanScore}`, margin + 230, y + 8, 9, true);
+          const markerX = startX + ((Number(cleanScore) - 1) / 9) * (endX - startX);
+          drawText("|", markerX, y + 7, 14, true);
         }
         y -= 22;
       }
@@ -555,6 +560,7 @@
         y -= 22;
       }
       function commentBox(label, value, height = 58) {
+        if (!value) return;
         ensure(height + 24);
         drawText(`${label}:`, margin, y, 10, true);
         y -= 8;
@@ -593,8 +599,7 @@
       optionalComment("Quality of Design Work", comments.collage_design_quality);
       gradeLine("Percentage grade", answers.collage_grade);
       optionalComment("Collage percentage grade", comments.collage_grade);
-      commentBox("Collage Feedback Comments", answers.collage_comments, 64);
-      optionalComment("Collage feedback comments", comments.collage_comments);
+      commentBox("Collage Feedback Comments", comments.collage_comments, 64);
       pageFooter(1);
 
       newPage();
@@ -611,8 +616,7 @@
       optionalComment("Analysis", comments.essay_analysis);
       gradeLine("Percentage grade", answers.essay_grade);
       optionalComment("Essay percentage grade", comments.essay_grade);
-      commentBox("In-class Essay Comments", answers.essay_comments, 86);
-      optionalComment("In-class essay comments", comments.essay_comments);
+      commentBox("In-class Essay Comments", comments.essay_comments, 86);
       pageFooter(2);
       pages.push(ops.join("\n"));
 
@@ -671,8 +675,8 @@
     });
     next.addEventListener("click", () => {
       const value = fieldValue();
-      if (!value) { setStatus("Answer this question to continue."); return; }
       const q = current();
+      if (q.kind !== "comments" && !value) { setStatus("Answer this question to continue."); return; }
       if (q.kind === "percentage" && (!/^\d+$/.test(value) || Number(value) < 0 || Number(value) > 100)) {
         setStatus("Enter a whole-number percentage from 0 to 100.");
         return;
@@ -682,7 +686,7 @@
       else { index++; render(); }
     });
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" && current().kind !== "longtext") {
+      if (event.key === "Enter" && !["longtext", "comments"].includes(current().kind)) {
         event.preventDefault();
         next.click();
       }

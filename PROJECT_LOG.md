@@ -19,3 +19,5 @@
 - Removed Neighborhood, Reviewer, and Date from the generated PDF header; Student remains.
 - Added an optional per-question comments box to every question except Student name. Optional comments persist during navigation and are omitted entirely from the PDF when blank.
 - Changed the two collage rubric criteria and five essay rubric criteria from choice buttons to five-position sliders labelled Weak to Strong; PDFs record the selected score out of 5.
+- Revised those sliders to ten positions. The PDF no longer prints a numeric score; it places a marker at the corresponding position on the Weak-to-Strong line.
+- Simplified the Collage feedback comments and In-class essay comments steps to show only the optional comments box. Both steps can be left blank, and blank boxes are omitted from the PDF.
