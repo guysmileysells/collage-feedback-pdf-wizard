@@ -225,7 +225,7 @@ Privacy-positive aspects of the current implementation:
 - Responses use no-store/CORS/security headers and generic errors. Worker source contains no request/content logging.
 - Workers AI binding `AI` uses the currently available, lightweight `@cf/meta/llama-3.2-3b-instruct`. Native `COPY_EDIT_RATE_LIMIT` limits each Cloudflare client-IP key to 10 requests per 60 seconds without a paid storage dependency.
 - The configured browser endpoint is `https://collage-feedback-copy-edit.guysmileysells.workers.dev/copy-edit`.
-- The Worker was deployed and live-verified on Cloudflare on 2026-07-16 with Workers AI and the native 10-requests-per-60-seconds rate-limit binding. The browser integration produced a real suggestion and preserved the original until explicit acceptance.
+- The Worker and GitHub Pages frontend were deployed and live-verified on 2026-07-16. The public browser integration produced a real suggestion and preserved the original until explicit acceptance.
 
 Privacy/operational risks:
 

@@ -19,6 +19,7 @@
 - Added `wrangler.toml`, dependency-free Node Worker tests, and frontend/config source-presence tests.
 - Connected the free Cloudflare account, registered the `guysmileysells.workers.dev` subdomain, and deployed `collage-feedback-copy-edit` with Workers AI and the native 10-requests-per-minute/IP rate-limit binding.
 - Replaced the unavailable initial model identifier with the current lightweight `@cf/meta/llama-3.2-3b-instruct`, then live-verified the browser-to-Worker-to-AI path: a real suggestion appeared beside the unchanged original and was applied only after explicit acceptance.
+- Deployed the AI-enabled frontend to GitHub Pages and verified the complete public path at `https://guysmileysells.github.io/collage-feedback-pdf-wizard/`: the PIN unlocked the 28-question wizard, Question 2 displayed the AI controls and privacy notice, and a live copy-edit suggestion appeared without changing the original comment.
 
 ## 2026-07-15
 - Added `AGENT_HANDOFF.md` as the comprehensive takeover document.
