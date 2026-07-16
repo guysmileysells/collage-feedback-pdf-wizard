@@ -11,3 +11,9 @@
 - Enabled GitHub Pages from `gh-pages` branch root.
 - Verified live deployment: `https://guysmileysells.github.io/collage-feedback-pdf-wizard/` returned HTTP 200 with title `Collage and Essay Feedback`; browser PIN test with code `1234` opened the wizard.
 - Updated static PIN hash so the access code is now `5656`; verified locally that `5656` matches and old code `1234` no longer matches before redeploying.
+
+## 2026-07-15
+- Added `AGENT_HANDOFF.md` as the comprehensive takeover document.
+- Removed the Neighborhood, Reviewer, and Review date questions at the owner's request, reducing the wizard from 31 to 28 required questions.
+- Replaced letter-grade choices for the collage and essay with required whole-number percentage inputs validated from 0 through 100; generated PDFs now label both as percentage grades and append `%`.
+- Removed Neighborhood, Reviewer, and Date from the generated PDF header; Student remains.
