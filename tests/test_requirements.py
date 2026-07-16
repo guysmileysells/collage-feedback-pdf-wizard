@@ -56,8 +56,20 @@ def test_rubric_feedback_uses_weak_to_strong_sliders():
 def test_pdf_slider_uses_marker_position_without_printing_number():
     assert 'function scoreBlock(numberedPrompt, score)' in HTML
     assert 'const markerX =' in HTML
-    assert 'drawText("|", markerX' in HTML
+    assert 'line(markerX, y - 5, markerX, y + 11, 1.5)' in HTML
+    assert 'drawText("|", markerX' not in HTML
     assert 'drawText(`Score: ${cleanScore}`' not in HTML
+
+
+def test_pdf_comments_have_readable_vertical_spacing():
+    assert 'const commentTopGap = 12' in HTML
+    assert 'const labelGap = 16' in HTML
+    assert 'const textTopPadding = 20' in HTML
+    assert 'const blockGap = 20' in HTML
+    assert 'y -= commentTopGap' in HTML
+    assert 'y -= labelGap' in HTML
+    assert 'y - textTopPadding' in HTML
+    assert 'y -= height + blockGap' in HTML
 
 
 def test_optional_comments_are_saved_for_every_question_except_name():

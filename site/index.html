@@ -481,6 +481,10 @@
     function makePdf() {
       const pageW = 612, pageH = 792, margin = 54;
       const contentW = pageW - margin * 2;
+      const commentTopGap = 12;
+      const labelGap = 16;
+      const textTopPadding = 20;
+      const blockGap = 20;
       const pages = [];
       let ops = [], y = 742;
 
@@ -550,7 +554,7 @@
         const cleanScore = score || "";
         if (cleanScore) {
           const markerX = startX + ((Number(cleanScore) - 1) / 9) * (endX - startX);
-          drawText("|", markerX, y + 7, 14, true);
+          line(markerX, y - 5, markerX, y + 11, 1.5);
         }
         y -= 22;
       }
@@ -561,23 +565,25 @@
       }
       function commentBox(label, value, height = 58) {
         if (!value) return;
-        ensure(height + 24);
+        ensure(height + commentTopGap + labelGap + blockGap + 12);
+        y -= commentTopGap;
         drawText(`${label}:`, margin, y, 10, true);
-        y -= 8;
+        y -= labelGap;
         rect(margin, y - height, contentW, height, false);
-        drawWrapped(value || "", margin + 8, y - 16, 92, 9, false);
-        y -= height + 12;
+        drawWrapped(value || "", margin + 10, y - textTopPadding, 90, 9, false, 14);
+        y -= height + blockGap;
       }
       function optionalComment(label, value) {
         if (!value) return;
         const lines = wrap(value, 88);
-        const height = Math.max(30, lines.length * 12 + 14);
-        ensure(height + 24);
+        const height = Math.max(42, lines.length * 14 + 24);
+        ensure(height + commentTopGap + labelGap + blockGap + 12);
+        y -= commentTopGap;
         drawText(`${label} - Comment:`, margin, y, 9, true);
-        y -= 8;
+        y -= labelGap;
         rect(margin, y - height, contentW, height, false);
-        drawWrapped(value, margin + 8, y - 16, 88, 9, false);
-        y -= height + 12;
+        drawWrapped(value, margin + 10, y - textTopPadding, 86, 9, false, 14);
+        y -= height + blockGap;
       }
 
       title("Collage Feedback");

@@ -21,3 +21,5 @@
 - Changed the two collage rubric criteria and five essay rubric criteria from choice buttons to five-position sliders labelled Weak to Strong; PDFs record the selected score out of 5.
 - Revised those sliders to ten positions. The PDF no longer prints a numeric score; it places a marker at the corresponding position on the Weak-to-Strong line.
 - Simplified the Collage feedback comments and In-class essay comments steps to show only the optional comments box. Both steps can be left blank, and blank boxes are omitted from the PDF.
+- Corrected PDF slider markers to draw as vertical strokes crossing the Weak-to-Strong line rather than text glyphs sitting above it.
+- Increased PDF comment spacing: larger label-to-box gaps, more internal padding, 14-point line spacing, taller dynamic boxes, and larger separation after each comment block.

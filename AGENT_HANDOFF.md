@@ -98,7 +98,7 @@ Questions:
 
 ### C. Collage rubric — Questions 18–21
 
-Questions 18–19 use a ten-position slider labelled **Weak** at the low end and **Strong** at the high end. The PDF shows the selection as a marker on that line without printing a number.
+Questions 18–19 use a ten-position slider labelled **Weak** at the low end and **Strong** at the high end. The PDF shows the selection as a vertical marker crossing that line without printing a number.
 
 Questions:
 
@@ -113,7 +113,7 @@ The generated PDF expands Question 18 to the fuller prompt:
 
 ### D. In-class essay — Questions 22–28
 
-Questions 22–26 use the same ten-position Weak-to-Strong slider and non-numeric PDF marker.
+Questions 22–26 use the same ten-position Weak-to-Strong slider and non-numeric marker crossing the PDF line.
 
 Questions:
 
@@ -369,6 +369,8 @@ This is consistent with the current public deployment but not with an expectatio
 - Collage score, grade, and comments appear.
 - Essay score, grade, and comments appear.
 - Long comments do not overlap or disappear.
+- Comment labels, boxes, text, and following sections have clear vertical spacing.
+- Slider markers cross the Weak-to-Strong line and do not appear as numbers or text above it.
 - Student names with accents are tested and the current ASCII limitation is documented or fixed.
 - Mobile-width layout remains usable.
 
