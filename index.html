@@ -122,6 +122,28 @@
       resize: vertical;
       line-height: 1.4;
     }
+    .optional-comments {
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid #e5e7eb;
+    }
+    .optional-comments label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .optional-comments textarea { min-height: 92px; }
+    .scale-wrap { padding: 8px 2px 2px; }
+    .scale-wrap input[type="range"] { padding: 0; border: 0; }
+    .scale-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      color: #4b5563;
+      font-weight: 700;
+    }
+    .scale-value { margin-top: 12px; text-align: center; font-weight: 700; }
     .options {
       display: grid;
       gap: 10px;
@@ -285,7 +307,6 @@
       }
     });
 
-    const rubric = ["Weak", "Developing", "Satisfactory", "Strong", "Excellent"];
     const checklist = ["Included", "Missing", "Needs Improvement", "Not Applicable"];
     const questions = [
       ["student_name", "Student name", "Submission details", "text"],
@@ -305,20 +326,21 @@
       ["two_statistics_or_data", "At least two statistics or pieces of data", "Required elements", "choice", checklist],
       ["works_cited_statistics", "Works cited list for your statistics", "Required elements", "choice", checklist],
       ["multiple_pages", "Multiple pages", "Required elements", "choice", checklist],
-      ["collage_thoughtful_overview", "2) Collage conveys a thoughtful and informative overview", "Collage rubric", "choice", rubric],
-      ["collage_design_quality", "3) Quality of Design Work", "Collage rubric", "choice", rubric],
+      ["collage_thoughtful_overview", "2) Collage conveys a thoughtful and informative overview", "Collage rubric", "scale"],
+      ["collage_design_quality", "3) Quality of Design Work", "Collage rubric", "scale"],
       ["collage_grade", "Collage percentage grade", "Collage rubric", "percentage"],
       ["collage_comments", "Collage feedback comments", "Collage rubric", "longtext"],
-      ["essay_thesis", "THESIS STATEMENT", "In-class essay", "choice", rubric],
-      ["essay_intro_conclusion", "STRUCTURED INTRODUCTORY AND CONCLUDING PARAGRAPH", "In-class essay", "choice", rubric],
-      ["essay_reading_interpretation", "INTERPRETATION OF READING", "In-class essay", "choice", rubric],
-      ["essay_citations", "IN-TEXT CITATIONS", "In-class essay", "choice", rubric],
-      ["essay_analysis", "ANALYSIS", "In-class essay", "choice", rubric],
+      ["essay_thesis", "THESIS STATEMENT", "In-class essay", "scale"],
+      ["essay_intro_conclusion", "STRUCTURED INTRODUCTORY AND CONCLUDING PARAGRAPH", "In-class essay", "scale"],
+      ["essay_reading_interpretation", "INTERPRETATION OF READING", "In-class essay", "scale"],
+      ["essay_citations", "IN-TEXT CITATIONS", "In-class essay", "scale"],
+      ["essay_analysis", "ANALYSIS", "In-class essay", "scale"],
       ["essay_grade", "Essay percentage grade", "In-class essay", "percentage"],
       ["essay_comments", "In-class essay comments", "In-class essay", "longtext"],
     ].map(([key, prompt, section, kind, options]) => ({key, prompt, section, kind, options: options || []}));
 
     const answers = {};
+    const comments = {};
     let index = 0;
     const counter = document.getElementById("counter");
     const section = document.getElementById("section");
@@ -335,7 +357,7 @@
     function defaultValue() { return ""; }
     function fieldValue() {
       const q = current();
-      if (q.kind === "choice") return answers[q.key] || "";
+      if (q.kind === "choice" || q.kind === "scale") return answers[q.key] || "";
       const field = document.getElementById("field");
       return field ? field.value.trim() : "";
     }
@@ -344,6 +366,9 @@
       const value = fieldValue();
       if (value) answers[q.key] = value;
       else delete answers[q.key];
+      const comment = document.getElementById("optional-comment");
+      if (comment && comment.value.trim()) comments[q.key] = comment.value.trim();
+      else delete comments[q.key];
     }
     function render() {
       const q = current();
@@ -364,9 +389,37 @@
           button.className = "option";
           button.textContent = option;
           if (answers[q.key] === option) button.classList.add("selected");
-          button.addEventListener("click", () => { answers[q.key] = option; render(); });
+          button.addEventListener("click", () => {
+            const comment = document.getElementById("optional-comment");
+            if (comment && comment.value.trim()) comments[q.key] = comment.value.trim();
+            answers[q.key] = option;
+            render();
+          });
           wrap.appendChild(button);
         });
+        answer.appendChild(wrap);
+      } else if (q.kind === "scale") {
+        const wrap = document.createElement("div");
+        wrap.className = "scale-wrap";
+        const slider = document.createElement("input");
+        slider.id = "scale";
+        slider.type = "range";
+        slider.min = "1";
+        slider.max = "5";
+        slider.step = "1";
+        slider.value = answers[q.key] || "3";
+        answers[q.key] = slider.value;
+        const labels = document.createElement("div");
+        labels.className = "scale-labels";
+        labels.innerHTML = "<span>Weak</span><span>Strong</span>";
+        const value = document.createElement("div");
+        value.className = "scale-value";
+        value.textContent = `${slider.value} / 5`;
+        slider.addEventListener("input", () => {
+          answers[q.key] = slider.value;
+          value.textContent = `${slider.value} / 5`;
+        });
+        wrap.append(slider, labels, value);
         answer.appendChild(wrap);
       } else {
         const field = document.createElement(q.kind === "longtext" ? "textarea" : "input");
@@ -385,6 +438,17 @@
         answer.appendChild(field);
         field.focus();
         if (field.select) field.select();
+      }
+      if (q.key !== "student_name") {
+        const commentWrap = document.createElement("div");
+        commentWrap.className = "optional-comments";
+        commentWrap.innerHTML = `<label for="optional-comment">Optional comments</label>`;
+        const comment = document.createElement("textarea");
+        comment.id = "optional-comment";
+        comment.placeholder = "Add an optional comment for this question";
+        comment.value = comments[q.key] || "";
+        commentWrap.appendChild(comment);
+        answer.appendChild(commentWrap);
       }
     }
 
@@ -498,6 +562,17 @@
         drawWrapped(value || "", margin + 8, y - 16, 92, 9, false);
         y -= height + 12;
       }
+      function optionalComment(label, value) {
+        if (!value) return;
+        const lines = wrap(value, 88);
+        const height = Math.max(30, lines.length * 12 + 14);
+        ensure(height + 24);
+        drawText(`${label} - Comment:`, margin, y, 9, true);
+        y -= 8;
+        rect(margin, y - height, contentW, height, false);
+        drawWrapped(value, margin + 8, y - 16, 88, 9, false);
+        y -= height + 12;
+      }
 
       title("Collage Feedback");
       infoLine();
@@ -505,6 +580,7 @@
       tableRow("Required Elements", "Included", true);
       questions.filter(q => q.section === "Required elements").forEach(q => {
         tableRow(q.prompt, answers[q.key] || "");
+        optionalComment(q.prompt, comments[q.key]);
       });
 
       y -= 12;
@@ -512,20 +588,31 @@
         "2) Collage conveys a thoughtful and informative overview of your neighbourhood through the images included and the way they have been curated (carefully gathered, sifted, chosen, and organized). It should tell a story through the images and information included.",
         answers.collage_thoughtful_overview
       );
+      optionalComment("Collage overview", comments.collage_thoughtful_overview);
       scoreBlock("3) Quality of Design Work", answers.collage_design_quality);
+      optionalComment("Quality of Design Work", comments.collage_design_quality);
       gradeLine("Percentage grade", answers.collage_grade);
+      optionalComment("Collage percentage grade", comments.collage_grade);
       commentBox("Collage Feedback Comments", answers.collage_comments, 64);
+      optionalComment("Collage feedback comments", comments.collage_comments);
       pageFooter(1);
 
       newPage();
       title("In-class Essay");
       scoreBlock("THESIS STATEMENT", answers.essay_thesis);
+      optionalComment("Thesis statement", comments.essay_thesis);
       scoreBlock("STRUCTURED INTRODUCTORY AND CONCLUDING PARAGRAPH", answers.essay_intro_conclusion);
+      optionalComment("Introductory and concluding paragraph", comments.essay_intro_conclusion);
       scoreBlock("INTERPRETATION OF READING (required elements, depth of engagement etc.)", answers.essay_reading_interpretation);
+      optionalComment("Interpretation of reading", comments.essay_reading_interpretation);
       scoreBlock("IN-TEXT CITATIONS:", answers.essay_citations);
+      optionalComment("In-text citations", comments.essay_citations);
       scoreBlock("ANALYSIS (Level of sophistication, depth of engagement, connection to collage and 29 questions exercise)", answers.essay_analysis);
+      optionalComment("Analysis", comments.essay_analysis);
       gradeLine("Percentage grade", answers.essay_grade);
+      optionalComment("Essay percentage grade", comments.essay_grade);
       commentBox("In-class Essay Comments", answers.essay_comments, 86);
+      optionalComment("In-class essay comments", comments.essay_comments);
       pageFooter(2);
       pages.push(ops.join("\n"));
 
@@ -577,7 +664,11 @@
       setStatus("");
     }
     previous.addEventListener("click", () => { saveCurrent(); if (index > 0) { index--; render(); } });
-    clear.addEventListener("click", () => { delete answers[current().key]; render(); });
+    clear.addEventListener("click", () => {
+      delete answers[current().key];
+      delete comments[current().key];
+      render();
+    });
     next.addEventListener("click", () => {
       const value = fieldValue();
       if (!value) { setStatus("Answer this question to continue."); return; }
