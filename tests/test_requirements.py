@@ -31,3 +31,38 @@ def test_pdf_header_only_keeps_student_name():
     assert 'Student: ${answers.student_name || ""}' in HTML
     for label in ("Neighborhood:", "Reviewer:", "Date:"):
         assert label not in HTML
+
+
+def test_rubric_feedback_uses_weak_to_strong_sliders():
+    slider_keys = (
+        "collage_thoughtful_overview",
+        "collage_design_quality",
+        "essay_thesis",
+        "essay_intro_conclusion",
+        "essay_reading_interpretation",
+        "essay_citations",
+        "essay_analysis",
+    )
+    for key in slider_keys:
+        assert f'["{key}"' in HTML
+        question_line = next(line for line in HTML.splitlines() if f'["{key}"' in line)
+        assert '"scale"' in question_line
+    assert 'slider.type = "range"' in HTML
+    assert 'slider.min = "1"' in HTML
+    assert 'slider.max = "5"' in HTML
+    assert 'Weak' in HTML and 'Strong' in HTML
+
+
+def test_optional_comments_are_saved_for_every_question_except_name():
+    assert 'const comments = {}' in HTML
+    assert 'q.key !== "student_name"' in HTML
+    assert 'optional-comment' in HTML
+    assert 'comments[q.key]' in HTML
+
+
+def test_pdf_only_draws_optional_comments_when_present():
+    assert 'function optionalComment(label, value)' in HTML
+    assert 'if (!value) return;' in HTML
+    assert 'optionalComment(q.prompt, comments[q.key])' in HTML
+    assert 'optionalComment("Collage percentage grade", comments.collage_grade)' in HTML
+    assert 'optionalComment("Essay percentage grade", comments.essay_grade)' in HTML

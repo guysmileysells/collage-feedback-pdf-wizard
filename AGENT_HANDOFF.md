@@ -45,7 +45,7 @@ Verified on 2026-07-15:
 2. A four-digit PIN screen appears.
 3. Correct code unlocks the wizard for the current browser tab/session using `sessionStorage`.
 4. Reviewer moves through 28 required questions, one at a time.
-5. Text inputs, long-form comments, and button-based rubric selections are held in an in-memory JavaScript object.
+5. Text inputs, long-form comments, button selections, five-position Weak-to-Strong sliders, and optional per-question comments are held in memory.
 6. `Back` returns to the previous question while retaining answers.
 7. `Clear` removes the answer to the current question.
 8. `Next` refuses to advance if the current answer is blank.
@@ -57,6 +57,8 @@ Verified on 2026-07-15:
 11. The downloaded filename is based on the student name, normalized to letters/numbers/underscores, with `_Feedback.pdf` appended.
 
 No answer data is sent to an application backend because no backend exists.
+
+Every question except Student name also displays an optional comments box. These comments are retained while navigating. A comment is added beneath its related item in the generated PDF only when text was entered; blank optional comments produce no PDF label or empty box.
 
 ## 5. Complete rubric/question inventory
 
@@ -96,13 +98,7 @@ Questions:
 
 ### C. Collage rubric — Questions 18–21
 
-Rubric options for Questions 18–19:
-
-- Weak
-- Developing
-- Satisfactory
-- Strong
-- Excellent
+Questions 18–19 use a five-position slider labelled **Weak** at the low end and **Strong** at the high end. The PDF records the selected score out of 5.
 
 Questions:
 
@@ -117,13 +113,7 @@ The generated PDF expands Question 18 to the fuller prompt:
 
 ### D. In-class essay — Questions 22–28
 
-Rubric options for Questions 22–26:
-
-- Weak
-- Developing
-- Satisfactory
-- Strong
-- Excellent
+Questions 22–26 use the same five-position Weak-to-Strong slider and PDF score out of 5.
 
 Questions:
 

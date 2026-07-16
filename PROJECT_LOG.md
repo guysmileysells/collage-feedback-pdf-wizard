@@ -17,3 +17,5 @@
 - Removed the Neighborhood, Reviewer, and Review date questions at the owner's request, reducing the wizard from 31 to 28 required questions.
 - Replaced letter-grade choices for the collage and essay with required whole-number percentage inputs validated from 0 through 100; generated PDFs now label both as percentage grades and append `%`.
 - Removed Neighborhood, Reviewer, and Date from the generated PDF header; Student remains.
+- Added an optional per-question comments box to every question except Student name. Optional comments persist during navigation and are omitted entirely from the PDF when blank.
+- Changed the two collage rubric criteria and five essay rubric criteria from choice buttons to five-position sliders labelled Weak to Strong; PDFs record the selected score out of 5.
