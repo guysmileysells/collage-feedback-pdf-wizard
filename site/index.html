@@ -134,6 +134,12 @@
       font-weight: 700;
     }
     .optional-comments textarea { min-height: 92px; }
+    .copy-edit-tools { margin-top: 10px; }
+    .privacy-notice { margin: 8px 0; color: #4b5563; font-size: 13px; line-height: 1.4; }
+    .copy-edit-preview { margin-top: 12px; padding: 14px; border: 1px solid #cfd6e3; border-radius: 7px; background: #f9fafb; }
+    .copy-edit-preview h3 { margin: 10px 0 5px; font-size: 14px; }
+    .copy-edit-preview p { margin: 0; white-space: pre-wrap; line-height: 1.4; }
+    .copy-edit-preview .group { margin-top: 12px; flex-wrap: wrap; }
     .scale-wrap { padding: 8px 2px 2px; }
     .scale-wrap input[type="range"] { padding: 0; border: 0; }
     .scale-labels {
@@ -341,6 +347,10 @@
 
     const answers = {};
     const comments = {};
+    const MAX_COMMENT_LENGTH = 3000;
+    const COPY_EDIT_TIMEOUT_MS = 12000;
+    // Change this after deploying the Worker if your workers.dev subdomain differs.
+    const COPY_EDIT_API_URL = "https://collage-feedback-copy-edit.guysmileysells.workers.dev/copy-edit";
     let index = 0;
     const counter = document.getElementById("counter");
     const section = document.getElementById("section");
@@ -371,6 +381,63 @@
       const comment = document.getElementById("optional-comment");
       if (comment && comment.value.trim()) comments[q.key] = comment.value.trim();
       else delete comments[q.key];
+    }
+    async function requestCopyEdit(comment, preview, button) {
+      const original = comment.value.trim();
+      if (!original) { setStatus("Enter a comment before asking AI."); return; }
+      button.disabled = true;
+      setStatus("Requesting a copy edit…");
+      try {
+        const response = await fetch(COPY_EDIT_API_URL, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({comment: original}),
+          signal: AbortSignal.timeout(COPY_EDIT_TIMEOUT_MS),
+        });
+        if (!response.ok) throw new Error("copy edit failed");
+        const data = await response.json();
+        if (typeof data.suggestion !== "string" || !data.suggestion.trim()) throw new Error("invalid response");
+        const suggestion = data.suggestion.trim();
+        preview.innerHTML = "";
+        const originalHeading = document.createElement("h3");
+        originalHeading.textContent = "Original";
+        const originalText = document.createElement("p");
+        originalText.textContent = original;
+        const suggestedHeading = document.createElement("h3");
+        suggestedHeading.textContent = "Suggested";
+        const suggestedText = document.createElement("p");
+        suggestedText.textContent = suggestion;
+        const actions = document.createElement("div");
+        actions.className = "group";
+        const acceptButton = document.createElement("button");
+        acceptButton.type = "button";
+        acceptButton.className = "action";
+        acceptButton.textContent = "Accept";
+        acceptButton.addEventListener("click", () => {
+          comment.value = suggestion;
+          comments[current().key] = suggestion;
+          preview.hidden = true;
+          setStatus("Suggestion accepted.");
+        });
+        const retryButton = document.createElement("button");
+        retryButton.type = "button";
+        retryButton.className = "action secondary";
+        retryButton.textContent = "Try again";
+        retryButton.addEventListener("click", () => requestCopyEdit(comment, preview, button));
+        const keepButton = document.createElement("button");
+        keepButton.type = "button";
+        keepButton.className = "action secondary";
+        keepButton.textContent = "Keep original";
+        keepButton.addEventListener("click", () => { preview.hidden = true; setStatus("Original kept."); });
+        actions.append(acceptButton, retryButton, keepButton);
+        preview.append(originalHeading, originalText, suggestedHeading, suggestedText, actions);
+        preview.hidden = false;
+        setStatus("Review the suggestion. Your comment has not changed.");
+      } catch (error) {
+        setStatus(error?.name === "TimeoutError" ? "The copy-edit request timed out. Try again." : "Copy edit unavailable. Try again later.");
+      } finally {
+        button.disabled = false;
+      }
     }
     function render() {
       const q = current();
@@ -447,9 +514,24 @@
         commentWrap.innerHTML = `<label for="optional-comment">Optional comments</label>`;
         const comment = document.createElement("textarea");
         comment.id = "optional-comment";
+        comment.maxLength = MAX_COMMENT_LENGTH;
         comment.placeholder = "Add an optional comment for this question";
         comment.value = comments[q.key] || "";
-        commentWrap.appendChild(comment);
+        const tools = document.createElement("div");
+        tools.className = "copy-edit-tools";
+        const copyEditButton = document.createElement("button");
+        copyEditButton.type = "button";
+        copyEditButton.className = "action secondary";
+        copyEditButton.textContent = "Ask AI / Copy edit";
+        const privacy = document.createElement("p");
+        privacy.className = "privacy-notice";
+        privacy.textContent = "Only this comment is sent to Cloudflare Workers AI. Do not include student names or other identifying information. Maximum 3000 characters.";
+        const preview = document.createElement("div");
+        preview.className = "copy-edit-preview";
+        preview.hidden = true;
+        copyEditButton.addEventListener("click", () => requestCopyEdit(comment, preview, copyEditButton));
+        tools.append(copyEditButton, privacy, preview);
+        commentWrap.append(comment, tools);
         answer.appendChild(commentWrap);
       }
     }

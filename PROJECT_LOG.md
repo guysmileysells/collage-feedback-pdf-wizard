@@ -12,6 +12,14 @@
 - Verified live deployment: `https://guysmileysells.github.io/collage-feedback-pdf-wizard/` returned HTTP 200 with title `Collage and Essay Feedback`; browser PIN test with code `1234` opened the wizard.
 - Updated static PIN hash so the access code is now `5656`; verified locally that `5656` matches and old code `1234` no longer matches before redeploying.
 
+## 2026-07-16
+- Added opt-in AI copy-edit controls to every optional comment textarea. The browser sends only the selected comment, caps it at 3,000 characters, times out after 12 seconds, and keeps the original unchanged until the reviewer explicitly accepts a displayed suggestion.
+- Added a plain-language privacy notice warning reviewers not to enter names or identifying information into comments sent for copy-editing.
+- Added a Cloudflare Worker at `worker/src/index.js` with only `POST /copy-edit` (plus CORS preflight), exact JSON-shape validation, strict production/localhost origin checks, generic errors, no logging, security headers, Workers AI via `@cf/meta/llama-3.2-3b-instruct`, and a native free-compatible rate-limit binding (10 requests/minute/IP).
+- Added `wrangler.toml`, dependency-free Node Worker tests, and frontend/config source-presence tests.
+- Connected the free Cloudflare account, registered the `guysmileysells.workers.dev` subdomain, and deployed `collage-feedback-copy-edit` with Workers AI and the native 10-requests-per-minute/IP rate-limit binding.
+- Replaced the unavailable initial model identifier with the current lightweight `@cf/meta/llama-3.2-3b-instruct`, then live-verified the browser-to-Worker-to-AI path: a real suggestion appeared beside the unchanged original and was applied only after explicit acceptance.
+
 ## 2026-07-15
 - Added `AGENT_HANDOFF.md` as the comprehensive takeover document.
 - Removed the Neighborhood, Reviewer, and Review date questions at the owner's request, reducing the wizard from 31 to 28 required questions.

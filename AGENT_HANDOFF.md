@@ -56,7 +56,7 @@ Verified on 2026-07-15:
     - Embedded PDF preview
 11. The downloaded filename is based on the student name, normalized to letters/numbers/underscores, with `_Feedback.pdf` appended.
 
-No answer data is sent to an application backend because no backend exists.
+Normal answers and PDF generation remain local. AI copy-editing is the sole exception: when the reviewer explicitly clicks **Ask AI / Copy edit**, only that optional comment is sent to the Cloudflare Worker. Student name, grades, rubric answers, prompts, and other answer context are not included.
 
 Every question except Student name also displays an optional comments box. These comments are retained while navigating. A comment is added beneath its related item in the generated PDF only when text was entered; blank optional comments produce no PDF label or empty box.
 
@@ -161,10 +161,9 @@ The generator can create additional internal pages if content exceeds available 
 - Static HTML5
 - Inline CSS
 - Vanilla browser JavaScript
-- No package manager
-- No build system
-- No backend
-- No API
+- No frontend package manager or build system; `package.json` only exposes the dependency-free Node Worker test command
+- Cloudflare Worker backend for opt-in copy-editing only
+- `POST /copy-edit` JSON API (plus browser CORS preflight)
 - No database
 - No external runtime dependencies
 - No analytics
@@ -211,10 +210,22 @@ This means:
 
 Privacy-positive aspects of the current implementation:
 
-- No form submission to a server.
+- No full form submission to a server; only a selected comment is sent after an explicit copy-edit action.
 - No database persistence.
 - No analytics in source.
 - PDF generation occurs locally in the browser.
+
+### AI copy-edit privacy and security (added 2026-07-16)
+
+- Every optional comment has **Ask AI / Copy edit** and a notice that only that comment is sent to Cloudflare Workers AI; reviewers are told not to include names or identifying information.
+- Requests contain exactly `{ "comment": "..." }`, with a 3,000-character browser and Worker limit and a 12-second frontend timeout.
+- The original and suggestion are displayed together. The textarea is not replaced until **Accept**; **Try again** and **Keep original** are also available.
+- The Worker accepts only `POST /copy-edit` plus required `OPTIONS` preflight. It rejects extra JSON keys, invalid JSON/content types, absent/unapproved origins, and over-length/blank comments.
+- Allowed origins are exactly `https://guysmileysells.github.io` and loopback localhost origins for development.
+- Responses use no-store/CORS/security headers and generic errors. Worker source contains no request/content logging.
+- Workers AI binding `AI` uses the currently available, lightweight `@cf/meta/llama-3.2-3b-instruct`. Native `COPY_EDIT_RATE_LIMIT` limits each Cloudflare client-IP key to 10 requests per 60 seconds without a paid storage dependency.
+- The configured browser endpoint is `https://collage-feedback-copy-edit.guysmileysells.workers.dev/copy-edit`.
+- The Worker was deployed and live-verified on Cloudflare on 2026-07-16 with Workers AI and the native 10-requests-per-60-seconds rate-limit binding. The browser integration produced a real suggestion and preserved the original until explicit acceptance.
 
 Privacy/operational risks:
 
@@ -310,7 +321,7 @@ This is consistent with the current public deployment but not with an expectatio
 12. **No final review step:** PDF is generated immediately after final answer.
 13. **Long-text pagination risk:** unusually long feedback may not fit cleanly.
 14. **Header enforcement uncertainty:** `_headers` may not affect GitHub Pages.
-15. **No automated test suite:** current verification is manual/browser-based.
+15. **Limited automated test suite:** Python source-presence tests and dependency-free Node Worker unit tests exist; full browser end-to-end AI testing still requires a deployed or local Worker binding.
 16. **No CI/CD workflow:** deployment is branch-based and manually maintained.
 17. **No explicit data-retention guidance:** local PDF handling is left to the user.
 
@@ -374,6 +385,11 @@ This is consistent with the current public deployment but not with an expectatio
 - Collage rubric item `2)` has a 24-point separation from the preceding required-elements content.
 - Student names with accents are tested and the current ASCII limitation is documented or fixed.
 - Mobile-width layout remains usable.
+- Every non-name question shows the copy-edit control and privacy notice.
+- Empty comments do not invoke the API; comments stop at 3,000 characters.
+- Original text remains unchanged while a suggestion is loading/displayed and after **Try again** or **Keep original**; only **Accept** replaces it.
+- Browser request payload contains only `comment`; timeout and generic failure messages leave the original intact.
+- Run `python -m pytest -q` and `npm test` before any deployment.
 
 ### Sensible next improvements—only after owner approval
 

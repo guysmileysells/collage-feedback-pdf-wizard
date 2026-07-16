@@ -1,0 +1,14 @@
+name = "collage-feedback-copy-edit"
+main = "worker/src/index.js"
+compatibility_date = "2026-07-16"
+workers_dev = true
+
+[ai]
+binding = "AI"
+
+# Cloudflare's native rate-limit binding requires no paid storage service.
+# Keep namespace_id stable and unique within this account.
+[[ratelimits]]
+name = "COPY_EDIT_RATE_LIMIT"
+namespace_id = "1001"
+simple = { limit = 10, period = 60 }
