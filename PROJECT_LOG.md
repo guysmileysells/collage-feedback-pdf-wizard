@@ -6,9 +6,9 @@
 - Organized 165 reusable comments into nine rubric categories: required elements, collage storytelling, collage design, thesis, introduction/conclusion, reading interpretation, citations, analysis, and overall feedback.
 - Required-element questions show concise general feedback plus comments specific to the requirement where available. Collage and essay summary-comment steps expose the full relevant category sets.
 - Added focused automated coverage for the comments-bank asset, category/key mapping, grouped dropdown rendering, insertion/appending behavior, and editable textarea requirement.
-- Increased PDF spacing before every Weak-to-Strong scale so each rubric item begins as a distinct visual block.
+- Added an 18-point blank line between every rubric prompt and its Weak-to-Strong scale, including the long “Collage conveys…” prompt.
 - Fixed comment-box sizing to calculate height from the exact same wrapped lines used for rendering, including paragraph breaks. Long comments such as “Quality of Design Work” now remain inside their borders; overall collage and essay comment boxes also expand as needed.
-- Added a full-width writing rule beneath both collage and essay percentage grades.
+- Added 18 points of blank space before both collage and essay percentage grades. A short-lived horizontal grade rule was removed after instructor review; no extra line is drawn.
 
 ## 2026-06-20
 - Received uploaded `Collage_Feedback_PDF_Wizard_Site_v1.zip` from Discord.

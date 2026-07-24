@@ -630,10 +630,10 @@
       const textTopPadding = 20;
       const blockGap = 20;
       const collageRubricGap = 24;
-      const scoreBlockTopGap = 18;
+      const scaleLabelTopGap = 18;
       const commentMaxChars = 86;
       const commentLineHeight = 14;
-      const gradeRuleGap = 10;
+      const percentageGradeTopGap = 18;
       const pages = [];
       let ops = [], y = 742;
 
@@ -691,14 +691,13 @@
       }
       function scoreBlock(numberedPrompt, score) {
         const promptLines = wrap(numberedPrompt, 82);
-        const blockH = 18 + promptLines.length * 11 + 28;
-        ensure(blockH + scoreBlockTopGap);
-        y -= scoreBlockTopGap;
+        const blockH = 18 + promptLines.length * 11 + 28 + scaleLabelTopGap;
+        ensure(blockH);
         promptLines.forEach((part) => {
           drawText(part, margin, y, 10, true);
           y -= 11;
         });
-        y -= 4;
+        y -= scaleLabelTopGap;
         drawText("Weak", margin, y, 9, false);
         drawText("Strong", margin + contentW - 35, y, 9, false);
         const startX = margin + 46;
@@ -712,11 +711,10 @@
         y -= 22;
       }
       function gradeLine(label, value) {
-        ensure(30);
+        ensure(24 + percentageGradeTopGap);
+        y -= percentageGradeTopGap;
         drawText(value ? `${label}: ${value}%` : `${label}:`, margin, y, 11, true);
-        y -= 16;
-        line(margin, y + gradeRuleGap, margin + contentW, y + gradeRuleGap, 0.5);
-        y -= 12;
+        y -= 22;
       }
       function commentBox(label, value, height = 58) {
         if (!value) return;

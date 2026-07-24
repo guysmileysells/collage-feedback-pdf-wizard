@@ -72,10 +72,12 @@ def test_pdf_comments_have_readable_vertical_spacing():
     assert 'y -= height + blockGap' in HTML
 
 
-def test_pdf_adds_space_before_every_weak_to_strong_scale():
-    assert 'const scoreBlockTopGap = 18' in HTML
-    assert 'ensure(blockH + scoreBlockTopGap)' in HTML
-    assert 'y -= scoreBlockTopGap' in HTML
+def test_pdf_adds_space_between_each_prompt_and_weak_strong_scale():
+    assert 'const scaleLabelTopGap = 18' in HTML
+    assert 'y -= scaleLabelTopGap' in HTML
+    scale_function = HTML.split('function scoreBlock(numberedPrompt, score)', 1)[1].split('function gradeLine', 1)[0]
+    assert scale_function.index('y -= scaleLabelTopGap') < scale_function.index('drawText("Weak"')
+    assert 'scoreBlockTopGap' not in HTML
 
 
 def test_pdf_comment_boxes_expand_using_the_same_wrapping_as_rendered_text():
@@ -88,9 +90,13 @@ def test_pdf_comment_boxes_expand_using_the_same_wrapping_as_rendered_text():
     assert 'drawWrapped(value, margin + 10, y - textTopPadding, commentMaxChars, 9, false, commentLineHeight)' in HTML
 
 
-def test_pdf_draws_a_writing_line_below_each_percentage_grade():
-    assert 'const gradeRuleGap = 10' in HTML
-    assert 'line(margin, y + gradeRuleGap, margin + contentW, y + gradeRuleGap, 0.5)' in HTML
+def test_pdf_adds_space_before_each_percentage_grade_without_drawing_a_rule():
+    assert 'const percentageGradeTopGap = 18' in HTML
+    assert 'ensure(24 + percentageGradeTopGap)' in HTML
+    assert 'y -= percentageGradeTopGap' in HTML
+    assert 'gradeRuleGap' not in HTML
+    grade_function = HTML.split('function gradeLine(label, value)', 1)[1].split('function commentBox', 1)[0]
+    assert 'line(' not in grade_function
     assert HTML.count('gradeLine("Percentage grade"') == 2
 
 
