@@ -45,12 +45,13 @@ Verified on 2026-07-15:
 2. A four-digit PIN screen appears.
 3. Correct code unlocks the wizard for the current browser tab/session using `sessionStorage`.
 4. Reviewer moves through 28 questions, one at a time; the two dedicated feedback-comment steps are optional.
-5. Text inputs, button selections, ten-position Weak-to-Strong sliders, and optional per-question comments are held in memory.
-6. `Back` returns to the previous question while retaining answers.
-7. `Clear` removes the answer to the current question.
-8. `Next` refuses to advance if a required answer is blank; the two dedicated feedback-comment steps may be blank.
-9. On Question 28, the button label becomes `Download PDF`.
-10. The browser constructs a PDF locally and shows:
+5. Every optional-comment area includes a question-relevant **Comments bank** dropdown. Selecting feedback inserts it into the editable textarea; further selections append additional paragraphs that can also be edited.
+6. Text inputs, button selections, ten-position Weak-to-Strong sliders, and optional per-question comments are held in memory.
+7. `Back` returns to the previous question while retaining answers.
+8. `Clear` removes the answer to the current question.
+9. `Next` refuses to advance if a required answer is blank; the two dedicated feedback-comment steps may be blank.
+10. On Question 28, the button label becomes `Download PDF`.
+11. The browser constructs a PDF locally and shows:
     - Open PDF
     - Download PDF
     - Embedded PDF preview
@@ -59,6 +60,8 @@ Verified on 2026-07-15:
 Normal answers and PDF generation remain local. AI copy-editing is the sole exception: when the reviewer explicitly clicks **Ask AI / Copy edit**, only that optional comment is sent to the Cloudflare Worker. Student name, grades, rubric answers, prompts, and other answer context are not included.
 
 Every question except Student name also displays an optional comments box. These comments are retained while navigating. A comment is added beneath its related item in the generated PDF only when text was entered; blank optional comments produce no PDF label or empty box.
+
+The built-in comments bank contains 165 constructive, final-assignment comments in `site/comments-bank.js`. They are grouped into nine rubric categories and mapped to the relevant form questions. Required-element questions receive general plus requirement-specific choices; rubric questions receive their matching category; collage and essay summary-comment questions combine all relevant categories. Dropdown insertion never locks the textarea or replaces existing text silently: the first choice populates an empty box and later choices append after a blank line.
 
 ## 5. Complete rubric/question inventory
 
@@ -160,6 +163,7 @@ The generator can create additional internal pages if content exceeds available 
 
 - Static HTML5
 - Inline CSS
+- Static `site/comments-bank.js` data/mapping asset
 - Vanilla browser JavaScript
 - No frontend package manager or build system; `package.json` only exposes the dependency-free Node Worker test command
 - Cloudflare Worker backend for opt-in copy-editing only

@@ -1,5 +1,12 @@
 # Collage Feedback PDF Wizard — Project Log
 
+## 2026-07-24
+- Integrated the instructor-approved constructive comments bank into the existing wizard as `site/comments-bank.js`.
+- Added question-specific **Comments bank** dropdowns beside the editable optional-comments box. Selecting an item inserts it immediately; selecting additional items appends them with paragraph spacing, and the resulting text remains fully editable.
+- Organized 165 reusable comments into nine rubric categories: required elements, collage storytelling, collage design, thesis, introduction/conclusion, reading interpretation, citations, analysis, and overall feedback.
+- Required-element questions show concise general feedback plus comments specific to the requirement where available. Collage and essay summary-comment steps expose the full relevant category sets.
+- Added focused automated coverage for the comments-bank asset, category/key mapping, grouped dropdown rendering, insertion/appending behavior, and editable textarea requirement.
+
 ## 2026-06-20
 - Received uploaded `Collage_Feedback_PDF_Wizard_Site_v1.zip` from Discord.
 - Extracted static site into `/home/i9-10900kf/projects/collage-feedback-pdf-wizard/site`.
