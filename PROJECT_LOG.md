@@ -9,6 +9,7 @@
 - Added an 18-point blank line between every rubric prompt and its Weak-to-Strong scale, including the long “Collage conveys…” prompt.
 - Fixed comment-box sizing to calculate height from the exact same wrapped lines used for rendering, including paragraph breaks. Long comments such as “Quality of Design Work” now remain inside their borders; overall collage and essay comment boxes also expand as needed.
 - Added 18 points of blank space before both collage and essay percentage grades. A short-lived horizontal grade rule was removed after instructor review; no extra line is drawn.
+- Increased PDF comment wrapping from 86 to 102 characters per line so feedback uses nearly the full width of each bordered box while retaining inner padding and automatic height expansion.
 
 ## 2026-06-20
 - Received uploaded `Collage_Feedback_PDF_Wizard_Site_v1.zip` from Discord.

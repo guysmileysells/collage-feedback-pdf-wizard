@@ -63,7 +63,7 @@ Every question except Student name also displays an optional comments box. These
 
 The built-in comments bank contains 165 constructive, final-assignment comments in `site/comments-bank.js`. They are grouped into nine rubric categories and mapped to the relevant form questions. Required-element questions receive general plus requirement-specific choices; rubric questions receive their matching category; collage and essay summary-comment questions combine all relevant categories. Dropdown insertion never locks the textarea or replaces existing text silently: the first choice populates an empty box and later choices append after a blank line.
 
-PDF layout rules: each rubric prompt is followed by an 18-point blank line before its Weak-to-Strong labels and scale. Each percentage grade also receives an 18-point leading gap, with no horizontal rule. Comment box height is derived from the same 86-character wrapping and 14-point line spacing used to draw its text, so long or multi-paragraph comments stay inside the border.
+PDF layout rules: each rubric prompt is followed by an 18-point blank line before its Weak-to-Strong labels and scale. Each percentage grade also receives an 18-point leading gap, with no horizontal rule. Comment text wraps at 102 characters per line to use nearly the full box width while retaining inner padding. Box height is derived from those same wrapped lines and 14-point line spacing, so long or multi-paragraph comments stay inside the border.
 
 ## 5. Complete rubric/question inventory
 

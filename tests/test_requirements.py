@@ -81,7 +81,7 @@ def test_pdf_adds_space_between_each_prompt_and_weak_strong_scale():
 
 
 def test_pdf_comment_boxes_expand_using_the_same_wrapping_as_rendered_text():
-    assert 'const commentMaxChars = 86' in HTML
+    assert 'const commentMaxChars = 102' in HTML
     assert 'const commentLineHeight = 14' in HTML
     assert 'function wrappedLines(value, maxChars)' in HTML
     assert 'const lines = wrappedLines(value, commentMaxChars)' in HTML
