@@ -72,6 +72,28 @@ def test_pdf_comments_have_readable_vertical_spacing():
     assert 'y -= height + blockGap' in HTML
 
 
+def test_pdf_adds_space_before_every_weak_to_strong_scale():
+    assert 'const scoreBlockTopGap = 18' in HTML
+    assert 'ensure(blockH + scoreBlockTopGap)' in HTML
+    assert 'y -= scoreBlockTopGap' in HTML
+
+
+def test_pdf_comment_boxes_expand_using_the_same_wrapping_as_rendered_text():
+    assert 'const commentMaxChars = 86' in HTML
+    assert 'const commentLineHeight = 14' in HTML
+    assert 'function wrappedLines(value, maxChars)' in HTML
+    assert 'const lines = wrappedLines(value, commentMaxChars)' in HTML
+    assert 'height = Math.max(height, lines.length * commentLineHeight + 24)' in HTML
+    assert 'const height = Math.max(42, lines.length * commentLineHeight + 24)' in HTML
+    assert 'drawWrapped(value, margin + 10, y - textTopPadding, commentMaxChars, 9, false, commentLineHeight)' in HTML
+
+
+def test_pdf_draws_a_writing_line_below_each_percentage_grade():
+    assert 'const gradeRuleGap = 10' in HTML
+    assert 'line(margin, y + gradeRuleGap, margin + contentW, y + gradeRuleGap, 0.5)' in HTML
+    assert HTML.count('gradeLine("Percentage grade"') == 2
+
+
 def test_pdf_has_extra_space_before_collage_rubric_item_two():
     assert 'const collageRubricGap = 24' in HTML
     assert 'y -= collageRubricGap' in HTML

@@ -630,6 +630,10 @@
       const textTopPadding = 20;
       const blockGap = 20;
       const collageRubricGap = 24;
+      const scoreBlockTopGap = 18;
+      const commentMaxChars = 86;
+      const commentLineHeight = 14;
+      const gradeRuleGap = 10;
       const pages = [];
       let ops = [], y = 742;
 
@@ -650,8 +654,11 @@
         if (fill) op(`q 0.90 0.91 0.93 rg ${x} ${yy} ${w} ${h} re f Q`);
         op(`0.65 w ${x} ${yy} ${w} ${h} re S`);
       }
+      function wrappedLines(value, maxChars) {
+        return String(value || "").split("\n").flatMap(part => wrap(part, maxChars));
+      }
       function drawWrapped(value, x, yy, maxChars, size = 9, bold = false, leading = 12) {
-        const lines = String(value || "").split("\n").flatMap(part => wrap(part, maxChars));
+        const lines = wrappedLines(value, maxChars);
         lines.forEach((part, i) => drawText(part, x, yy - (i * leading), size, bold));
         return lines.length * leading;
       }
@@ -685,7 +692,8 @@
       function scoreBlock(numberedPrompt, score) {
         const promptLines = wrap(numberedPrompt, 82);
         const blockH = 18 + promptLines.length * 11 + 28;
-        ensure(blockH);
+        ensure(blockH + scoreBlockTopGap);
+        y -= scoreBlockTopGap;
         promptLines.forEach((part) => {
           drawText(part, margin, y, 10, true);
           y -= 11;
@@ -704,30 +712,34 @@
         y -= 22;
       }
       function gradeLine(label, value) {
-        ensure(24);
+        ensure(30);
         drawText(value ? `${label}: ${value}%` : `${label}:`, margin, y, 11, true);
-        y -= 22;
+        y -= 16;
+        line(margin, y + gradeRuleGap, margin + contentW, y + gradeRuleGap, 0.5);
+        y -= 12;
       }
       function commentBox(label, value, height = 58) {
         if (!value) return;
+        const lines = wrappedLines(value, commentMaxChars);
+        height = Math.max(height, lines.length * commentLineHeight + 24);
         ensure(height + commentTopGap + labelGap + blockGap + 12);
         y -= commentTopGap;
         drawText(`${label}:`, margin, y, 10, true);
         y -= labelGap;
         rect(margin, y - height, contentW, height, false);
-        drawWrapped(value || "", margin + 10, y - textTopPadding, 90, 9, false, 14);
+        drawWrapped(value, margin + 10, y - textTopPadding, commentMaxChars, 9, false, commentLineHeight);
         y -= height + blockGap;
       }
       function optionalComment(label, value) {
         if (!value) return;
-        const lines = wrap(value, 88);
-        const height = Math.max(42, lines.length * 14 + 24);
+        const lines = wrappedLines(value, commentMaxChars);
+        const height = Math.max(42, lines.length * commentLineHeight + 24);
         ensure(height + commentTopGap + labelGap + blockGap + 12);
         y -= commentTopGap;
         drawText(`${label} - Comment:`, margin, y, 9, true);
         y -= labelGap;
         rect(margin, y - height, contentW, height, false);
-        drawWrapped(value, margin + 10, y - textTopPadding, 86, 9, false, 14);
+        drawWrapped(value, margin + 10, y - textTopPadding, commentMaxChars, 9, false, commentLineHeight);
         y -= height + blockGap;
       }
 
