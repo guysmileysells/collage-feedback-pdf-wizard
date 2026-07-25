@@ -344,8 +344,7 @@
     const checklist = ["Included", "Missing", "Needs Improvement", "Not Applicable"];
     const questions = [
       ["student_name", "Student name", "Submission details", "text"],
-      ["overview_of_neighborhood", "Overview of neighborhood", "Required elements", "choice", checklist],
-      ["the_feel", "The feel", "Required elements", "choice", checklist],
+      ["the_feel", "The feel of the neighbourhood", "Required elements", "choice", checklist],
       ["housing", "Housing", "Required elements", "choice", checklist],
       ["commercial_districts_and_economy", "Commercial districts and economy", "Required elements", "choice", checklist],
       ["people_and_community", "People and Community", "Required elements", "choice", checklist],
@@ -819,9 +818,14 @@
         <div class="group" style="margin-bottom: 12px;">
           <a class="action" href="${url}" target="_blank" rel="noopener">Open PDF</a>
           <a class="action secondary" href="${url}" download="${name}">Download PDF</a>
+          <button class="action secondary" id="new-blank-form" type="button">New blank form</button>
         </div>
         <iframe class="pdf-preview" src="${url}" title="Generated PDF preview"></iframe>
       `;
+      document.getElementById("new-blank-form").addEventListener("click", () => {
+        URL.revokeObjectURL(url);
+        window.location.reload();
+      });
       counter.textContent = "Finished";
       next.style.display = "none";
       previous.disabled = true;

@@ -67,13 +67,13 @@ PDF layout rules: each rubric prompt is followed by an 18-point blank line befor
 
 ## 5. Complete rubric/question inventory
 
-There are **28 questions** after the owner-approved July 15 revision: 26 required and two optional feedback-comment steps.
+There are **27 questions** after the owner-approved July 24 revision: 25 required and two optional feedback-comment steps.
 
 ### A. Submission details — Question 1
 
 1. Student name — free text
 
-### B. Required elements — Questions 2–17
+### B. Required elements — Questions 2–16
 
 Unless otherwise noted, options are:
 
@@ -84,53 +84,52 @@ Unless otherwise noted, options are:
 
 Questions:
 
-2. Overview of neighborhood
-3. The feel
-4. Housing
-5. Commercial districts and economy
-6. People and Community
-7. Transportation
-8. Public space and Art
-9. 2 key problems — options: Yes / No
-10. Vision for the future
-11. Map of neighborhood from bird's eye view
-12. Zoning map
-13. A selfie of you in the neighborhood
-14. At least 10 pictures or videos taken by you
-15. At least two statistics or pieces of data
-16. Works cited list for your statistics
-17. Multiple pages
+2. The feel of the neighbourhood
+3. Housing
+4. Commercial districts and economy
+5. People and Community
+6. Transportation
+7. Public space and Art
+8. 2 key problems — options: Yes / No
+9. Vision for the future
+10. Map of neighborhood from bird's eye view
+11. Zoning map
+12. A selfie of you in the neighborhood
+13. At least 10 pictures or videos taken by you
+14. At least two statistics or pieces of data
+15. Works cited list for your statistics
+16. Multiple pages
 
-### C. Collage rubric — Questions 18–21
+### C. Collage rubric — Questions 17–20
 
-Questions 18–19 use a ten-position slider labelled **Weak** at the low end and **Strong** at the high end. The PDF shows the selection as a vertical marker crossing that line without printing a number.
+Questions 17–18 use a ten-position slider labelled **Weak** at the low end and **Strong** at the high end. The PDF shows the selection as a vertical marker crossing that line without printing a number.
 
 Questions:
 
-18. `2) Collage conveys a thoughtful and informative overview`
-19. `3) Quality of Design Work`
-20. Collage percentage grade — required whole number from 0 to 100
-21. Collage feedback comments — optional comments box only; may be left blank
+17. `2) Collage conveys a thoughtful and informative overview`
+18. `3) Quality of Design Work`
+19. Collage percentage grade — required whole number from 0 to 100
+20. Collage feedback comments — optional comments box only; may be left blank
 
-The generated PDF expands Question 18 to the fuller prompt:
+The generated PDF expands Question 17 to the fuller prompt:
 
 > Collage conveys a thoughtful and informative overview of your neighbourhood through the images included and the way they have been curated (carefully gathered, sifted, chosen, and organized). It should tell a story through the images and information included.
 
-### D. In-class essay — Questions 22–28
+### D. In-class essay — Questions 21–27
 
-Questions 22–26 use the same ten-position Weak-to-Strong slider and non-numeric marker crossing the PDF line.
+Questions 21–25 use the same ten-position Weak-to-Strong slider and non-numeric marker crossing the PDF line.
 
 Questions:
 
-22. THESIS STATEMENT
-23. STRUCTURED INTRODUCTORY AND CONCLUDING PARAGRAPH
-24. INTERPRETATION OF READING
-25. IN-TEXT CITATIONS
-26. ANALYSIS
-27. Essay percentage grade — required whole number from 0 to 100
-28. In-class essay comments — optional comments box only; may be left blank
+21. THESIS STATEMENT
+22. STRUCTURED INTRODUCTORY AND CONCLUDING PARAGRAPH
+23. INTERPRETATION OF READING
+24. IN-TEXT CITATIONS
+25. ANALYSIS
+26. Essay percentage grade — required whole number from 0 to 100
+27. In-class essay comments — optional comments box only; may be left blank
 
-**Source-count history:** the source originally contained 31 entries. On 2026-07-15, the owner explicitly removed Neighborhood, Reviewer, and Review date, leaving 28 entries.
+**Source-count history:** the source originally contained 31 entries. On 2026-07-15, the owner removed Neighborhood, Reviewer, and Review date, leaving 28 entries. On 2026-07-24, the owner removed Overview of neighborhood, leaving 27 entries.
 
 ## 6. PDF output structure
 

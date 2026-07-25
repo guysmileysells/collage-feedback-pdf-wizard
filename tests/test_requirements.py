@@ -10,6 +10,23 @@ def test_removed_submission_questions_are_absent_everywhere():
         assert f"answers.{key}" not in HTML
 
 
+def test_required_elements_begin_with_feel_of_the_neighbourhood():
+    assert '["overview_of_neighborhood"' not in HTML
+    assert '["the_feel", "The feel of the neighbourhood", "Required elements", "choice", checklist]' in HTML
+    question_block = HTML.split('const questions = [', 1)[1].split('].map(', 1)[0]
+    required_lines = [line for line in question_block.splitlines() if '"Required elements"' in line]
+    assert required_lines[0].strip().startswith('["the_feel"')
+    assert 'sectionHeading("1) Required Elements")' in HTML
+
+
+def test_finished_page_can_start_a_new_blank_student_form():
+    assert 'id="new-blank-form"' in HTML
+    assert '>New blank form</button>' in HTML
+    assert 'document.getElementById("new-blank-form").addEventListener("click", () => {' in HTML
+    assert 'window.location.reload()' in HTML
+    assert 'sessionStorage.setItem("collageFeedbackUnlocked", "1")' in HTML
+
+
 def test_collage_and_essay_grades_are_percentages_out_of_100():
     assert 'const grades = [' not in HTML
     assert '["collage_grade", "Collage percentage grade", "Collage rubric", "percentage"]' in HTML

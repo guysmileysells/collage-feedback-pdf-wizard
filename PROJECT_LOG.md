@@ -10,6 +10,8 @@
 - Fixed comment-box sizing to calculate height from the exact same wrapped lines used for rendering, including paragraph breaks. Long comments such as “Quality of Design Work” now remain inside their borders; overall collage and essay comment boxes also expand as needed.
 - Added 18 points of blank space before both collage and essay percentage grades. A short-lived horizontal grade rule was removed after instructor review; no extra line is drawn.
 - Increased PDF comment wrapping from 86 to 102 characters per line so feedback uses nearly the full width of each bordered box while retaining inner padding and automatic height expansion.
+- Removed the “Overview of neighborhood” checklist question while retaining the “Required elements” section heading. “The feel of the neighbourhood” is now the first required-elements question.
+- Added a “New blank form” button to the completed-PDF page. It reloads the unlocked app with empty in-memory answers and comments so feedback for the next student can begin immediately.
 
 ## 2026-06-20
 - Received uploaded `Collage_Feedback_PDF_Wizard_Site_v1.zip` from Discord.
