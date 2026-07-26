@@ -431,7 +431,7 @@
         const originalText = document.createElement("p");
         originalText.textContent = original;
         const suggestedHeading = document.createElement("h3");
-        suggestedHeading.textContent = "Suggested";
+        suggestedHeading.textContent = "Copy-edited version";
         const suggestedText = document.createElement("p");
         suggestedText.textContent = suggestion;
         const actions = document.createElement("div");
@@ -449,7 +449,7 @@
         const retryButton = document.createElement("button");
         retryButton.type = "button";
         retryButton.className = "action secondary";
-        retryButton.textContent = "Try again";
+        retryButton.textContent = "Copy edit again";
         retryButton.addEventListener("click", () => requestCopyEdit(comment, preview, button));
         const keepButton = document.createElement("button");
         keepButton.type = "button";
@@ -583,7 +583,10 @@
         const copyEditButton = document.createElement("button");
         copyEditButton.type = "button";
         copyEditButton.className = "action secondary";
-        copyEditButton.textContent = "Ask AI / Copy edit";
+        copyEditButton.textContent = "Copy edit";
+        const copyEditHelp = document.createElement("p");
+        copyEditHelp.className = "privacy-notice";
+        copyEditHelp.textContent = "Corrects spelling, grammar, punctuation, capitalization, and sentence clarity only. It will not add or change your evaluation.";
         const privacy = document.createElement("p");
         privacy.className = "privacy-notice";
         privacy.textContent = "Only this comment is sent to Cloudflare Workers AI. Do not include student names or other identifying information. Maximum 3000 characters.";
@@ -591,7 +594,7 @@
         preview.className = "copy-edit-preview";
         preview.hidden = true;
         copyEditButton.addEventListener("click", () => requestCopyEdit(comment, preview, copyEditButton));
-        tools.append(copyEditButton, privacy, preview);
+        tools.append(copyEditButton, copyEditHelp, privacy, preview);
         commentWrap.append(comment, tools);
         answer.appendChild(commentWrap);
       }
