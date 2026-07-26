@@ -35,10 +35,11 @@ test("allows loopback localhost origins for development", async () => {
   assert.equal(response.headers.get("Access-Control-Allow-Origin"), "http://localhost:4187");
 });
 
-test("validates JSON shape, content type, and 3000-character limit", async () => {
+test("validates JSON shape, content type, and comment/instruction limits", async () => {
   assert.equal((await worker.fetch(post("{"), env())).status, 400);
   assert.equal((await worker.fetch(post({comment: "ok", student_name: "Private"}), env())).status, 400);
   assert.equal((await worker.fetch(post({comment: "x".repeat(3001)}), env())).status, 400);
+  assert.equal((await worker.fetch(post({comment: "ok", instructions: "x".repeat(501)}), env())).status, 400);
   assert.equal((await worker.fetch(post({comment: "   "}), env())).status, 400);
   assert.equal((await worker.fetch(post({comment: "ok"}, PROD_ORIGIN, {"Content-Type": "text/plain"}), env())).status, 415);
 });
@@ -61,6 +62,29 @@ test("sends only the comment to Workers AI and returns suggestion", async () => 
   assert.doesNotMatch(systemPrompt, /constructive professional tone/i);
   assert.equal(call.input.temperature, 0);
   assert.doesNotMatch(JSON.stringify(call.input), /student|grade|answer context/i);
+});
+
+test("passes optional user preferences only as narrower copy-edit constraints", async () => {
+  let call;
+  const response = await worker.fetch(post({comment: "Keep these questions?", instructions: "Preserve my questions and conversational voice."}), env({AI: {run: async (_model, input) => {
+    call = input;
+    return {response: "Keep these questions?"};
+  }}}));
+  assert.equal(response.status, 200);
+  assert.equal(call.messages[1].content, "Keep these questions?");
+  assert.match(call.messages[0].content, /Preserve my questions and conversational voice/);
+  assert.match(call.messages[0].content, /only as additional restrictions/);
+});
+
+test("rejects runaway rewrites that expand or change question and paragraph structure", async () => {
+  const original = "This is a good start, but push the analysis deeper. Why are people still choosing to drive? Do you think this is connected to safety?";
+  const runaway = `${original}\n\nA closer examination reveals many new factors and recommendations. `.repeat(8);
+  const expanded = await worker.fetch(post({comment: original}), env({AI: {run: async () => ({response: runaway})}}));
+  assert.equal(expanded.status, 422);
+  assert.deepEqual(await expanded.json(), {error: "Copy edit exceeded allowed scope. Add guidance and try again."});
+
+  const lostQuestion = await worker.fetch(post({comment: original}), env({AI: {run: async () => ({response: "This is a good start, but the analysis should go deeper because people continue to drive and safety may be connected."})}}));
+  assert.equal(lostQuestion.status, 422);
 });
 
 test("rate limits before invoking AI", async () => {

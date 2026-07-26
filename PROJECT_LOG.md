@@ -2,6 +2,7 @@
 
 ## 2026-07-26
 - Narrowed the optional AI feature to mechanical copy editing only. The Worker now permits corrections to spelling, grammar, punctuation, capitalization, and obvious sentence-level clarity while explicitly prohibiting new feedback, examples, praise, criticism, recommendations, explanations, meaning changes, or substantive removal. The interface now says “Copy edit” and explains this limitation before use.
+- Added an optional “Tell the copy editor what to preserve or avoid” field that persists while the current form is open and is sent only with the selected comment. Added server-side scope checks that refuse to show copy edits which expand substantially, change paragraph count, alter the number of questions, or produce disproportionate word-count changes. A rejected rewrite leaves the original untouched and asks the reviewer to add guidance and retry.
 
 ## 2026-07-24
 - Integrated the instructor-approved constructive comments bank into the existing wizard as `site/comments-bank.js`.

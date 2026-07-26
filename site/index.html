@@ -374,6 +374,7 @@
 
     const answers = {};
     const comments = {};
+    let copyEditPreferences = "";
     const MAX_COMMENT_LENGTH = 3000;
     const COPY_EDIT_TIMEOUT_MS = 12000;
     // Change this after deploying the Worker if your workers.dev subdomain differs.
@@ -418,11 +419,11 @@
         const response = await fetch(COPY_EDIT_API_URL, {
           method: "POST",
           headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({comment: original}),
+          body: JSON.stringify({comment: original, instructions: copyEditPreferences}),
           signal: AbortSignal.timeout(COPY_EDIT_TIMEOUT_MS),
         });
-        if (!response.ok) throw new Error("copy edit failed");
-        const data = await response.json();
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(typeof data.error === "string" ? data.error : "copy edit failed");
         if (typeof data.suggestion !== "string" || !data.suggestion.trim()) throw new Error("invalid response");
         const suggestion = data.suggestion.trim();
         preview.innerHTML = "";
@@ -461,7 +462,9 @@
         preview.hidden = false;
         setStatus("Review the suggestion. Your comment has not changed.");
       } catch (error) {
-        setStatus(error?.name === "TimeoutError" ? "The copy-edit request timed out. Try again." : "Copy edit unavailable. Try again later.");
+        if (error?.name === "TimeoutError") setStatus("The copy-edit request timed out. Try again.");
+        else if (error?.message?.includes("Copy edit exceeded allowed scope")) setStatus("Copy edit exceeded allowed scope and was not shown. Add guidance below and try again.");
+        else setStatus("Copy edit unavailable. Try again later.");
       } finally {
         button.disabled = false;
       }
@@ -580,6 +583,15 @@
         }
         const tools = document.createElement("div");
         tools.className = "copy-edit-tools";
+        const preferencesLabel = document.createElement("label");
+        preferencesLabel.htmlFor = "copy-edit-preferences";
+        preferencesLabel.textContent = "Tell the copy editor what to preserve or avoid (optional)";
+        const preferences = document.createElement("textarea");
+        preferences.id = "copy-edit-preferences";
+        preferences.maxLength = 500;
+        preferences.placeholder = "e.g., Preserve my questions and conversational voice. Do not shorten.";
+        preferences.value = copyEditPreferences;
+        preferences.addEventListener("input", () => { copyEditPreferences = preferences.value; });
         const copyEditButton = document.createElement("button");
         copyEditButton.type = "button";
         copyEditButton.className = "action secondary";
@@ -589,12 +601,12 @@
         copyEditHelp.textContent = "Corrects spelling, grammar, punctuation, capitalization, and sentence clarity only. It will not add or change your evaluation.";
         const privacy = document.createElement("p");
         privacy.className = "privacy-notice";
-        privacy.textContent = "Only this comment is sent to Cloudflare Workers AI. Do not include student names or other identifying information. Maximum 3000 characters.";
+        privacy.textContent = "Only this comment and your copy-edit preferences are sent to Cloudflare Workers AI. Do not include student names or other identifying information. Maximum 3000 characters for comments and 500 for preferences.";
         const preview = document.createElement("div");
         preview.className = "copy-edit-preview";
         preview.hidden = true;
         copyEditButton.addEventListener("click", () => requestCopyEdit(comment, preview, copyEditButton));
-        tools.append(copyEditButton, copyEditHelp, privacy, preview);
+        tools.append(preferencesLabel, preferences, copyEditButton, copyEditHelp, privacy, preview);
         commentWrap.append(comment, tools);
         answer.appendChild(commentWrap);
       }

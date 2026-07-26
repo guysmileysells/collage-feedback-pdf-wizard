@@ -222,9 +222,11 @@ Privacy-positive aspects of the current implementation:
 
 ### Copy-edit privacy, scope, and security (added 2026-07-16; narrowed 2026-07-26)
 
-- Every optional comment has **Copy edit**, a scope notice, and a notice that only that comment is sent to Cloudflare Workers AI; reviewers are told not to include names or identifying information.
+- Every optional comment has **Copy edit**, a scope notice, and a notice that only the selected comment and optional copy-edit preferences are sent to Cloudflare Workers AI; reviewers are told not to include names or identifying information.
 - The model is restricted to spelling, grammar, punctuation, capitalization, and obvious sentence-level clarity corrections. Its prompt forbids adding feedback, examples, praise, criticism, recommendations, or explanations; changing the evaluation, meaning, tone, paragraph breaks, or placeholders; and removing substantive content. If no correction is needed, it must return the original unchanged. Temperature is `0`.
-- Requests contain exactly `{ "comment": "..." }`, with a 3,000-character browser and Worker limit and a 12-second frontend timeout.
+- Reviewers can enter up to 500 characters in **Tell the copy editor what to preserve or avoid**. These preferences persist in memory across questions in the current form and are treated only as additional restrictions, never as permission to add or alter substance.
+- Requests contain exactly `{ "comment": "...", "instructions": "..." }`, with 3,000- and 500-character browser/Worker limits and a 12-second frontend timeout.
+- After AI responds, the Worker rejects the result with HTTP 422 if it expands beyond a narrow allowance, changes paragraph count, changes the number of question marks, or produces disproportionate word-count growth/reduction. The form does not display or apply rejected text; it retains the original and asks the reviewer to add guidance and retry.
 - The original and copy-edited version are displayed together. The textarea is not replaced until **Accept**; **Copy edit again** and **Keep original** are also available.
 - The Worker accepts only `POST /copy-edit` plus required `OPTIONS` preflight. It rejects extra JSON keys, invalid JSON/content types, absent/unapproved origins, and over-length/blank comments.
 - Allowed origins are exactly `https://guysmileysells.github.io` and loopback localhost origins for development.
