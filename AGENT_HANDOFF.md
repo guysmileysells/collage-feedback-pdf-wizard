@@ -220,7 +220,7 @@ Privacy-positive aspects of the current implementation:
 - No analytics in source.
 - PDF generation occurs locally in the browser.
 
-### Copy-edit privacy, scope, and security (added 2026-07-16; narrowed 2026-07-24)
+### Copy-edit privacy, scope, and security (added 2026-07-16; narrowed 2026-07-26)
 
 - Every optional comment has **Copy edit**, a scope notice, and a notice that only that comment is sent to Cloudflare Workers AI; reviewers are told not to include names or identifying information.
 - The model is restricted to spelling, grammar, punctuation, capitalization, and obvious sentence-level clarity corrections. Its prompt forbids adding feedback, examples, praise, criticism, recommendations, or explanations; changing the evaluation, meaning, tone, paragraph breaks, or placeholders; and removing substantive content. If no correction is needed, it must return the original unchanged. Temperature is `0`.

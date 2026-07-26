@@ -1,5 +1,8 @@
 # Collage Feedback PDF Wizard — Project Log
 
+## 2026-07-26
+- Narrowed the optional AI feature to mechanical copy editing only. The Worker now permits corrections to spelling, grammar, punctuation, capitalization, and obvious sentence-level clarity while explicitly prohibiting new feedback, examples, praise, criticism, recommendations, explanations, meaning changes, or substantive removal. The interface now says “Copy edit” and explains this limitation before use.
+
 ## 2026-07-24
 - Integrated the instructor-approved constructive comments bank into the existing wizard as `site/comments-bank.js`.
 - Added question-specific **Comments bank** dropdowns beside the editable optional-comments box. Selecting an item inserts it immediately; selecting additional items appends them with paragraph spacing, and the resulting text remains fully editable.
@@ -12,7 +15,6 @@
 - Increased PDF comment wrapping from 86 to 102 characters per line so feedback uses nearly the full width of each bordered box while retaining inner padding and automatic height expansion.
 - Removed the “Overview of neighborhood” checklist question while retaining the “Required elements” section heading. “The feel of the neighbourhood” is now the first required-elements question.
 - Added a “New blank form” button to the completed-PDF page. It reloads the unlocked app with empty in-memory answers and comments so feedback for the next student can begin immediately.
-- Narrowed the optional AI feature to mechanical copy editing only. The Worker now permits corrections to spelling, grammar, punctuation, capitalization, and obvious sentence-level clarity while explicitly prohibiting new feedback, examples, praise, criticism, recommendations, explanations, meaning changes, or substantive removal. The interface now says “Copy edit” and explains this limitation before use.
 
 ## 2026-06-20
 - Received uploaded `Collage_Feedback_PDF_Wizard_Site_v1.zip` from Discord.
