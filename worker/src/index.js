@@ -78,11 +78,11 @@ export default {
     try {
       const result = await env.AI.run(MODEL, {
         messages: [
-          {role: "system", content: "Copy-edit the supplied feedback for clarity, grammar, and a constructive professional tone. Preserve meaning and return only the revised text."},
+          {role: "system", content: "You are a copy editor. Correct only spelling, grammar, punctuation, capitalization, and obvious sentence-level clarity errors. Preserve the original meaning, evaluation, tone, paragraph breaks, and placeholders. Do not add new feedback, examples, praise, criticism, recommendations, or explanations. Do not remove substantive content. If no correction is needed, return the original text exactly unchanged. Return only the copy-edited text."},
           {role: "user", content: comment},
         ],
         max_tokens: 1024,
-        temperature: 0.2,
+        temperature: 0,
       });
       const suggestion = typeof result?.response === "string" ? result.response.trim() : "";
       if (!suggestion) throw new Error("empty result");

@@ -5,16 +5,19 @@ HTML = (Path(__file__).parents[1] / "site" / "index.html").read_text(encoding="u
 
 def test_every_optional_comment_gets_copy_edit_controls_and_privacy_notice():
     assert 'comment.maxLength = MAX_COMMENT_LENGTH' in HTML
-    assert 'copyEditButton.textContent = "Ask AI / Copy edit"' in HTML
+    assert 'copyEditButton.textContent = "Copy edit"' in HTML
+    assert 'Corrects spelling, grammar, punctuation, capitalization, and sentence clarity only.' in HTML
+    assert 'It will not add or change your evaluation.' in HTML
+    assert 'Ask AI / Copy edit' not in HTML
     assert 'Only this comment is sent to Cloudflare Workers AI' in HTML
     assert 'Do not include student names or other identifying information.' in HTML
 
 
 def test_copy_edit_preview_requires_explicit_acceptance():
     assert 'Original' in HTML
-    assert 'Suggested' in HTML
+    assert 'Copy-edited version' in HTML
     assert 'acceptButton.textContent = "Accept"' in HTML
-    assert 'retryButton.textContent = "Try again"' in HTML
+    assert 'retryButton.textContent = "Copy edit again"' in HTML
     assert 'keepButton.textContent = "Keep original"' in HTML
     assert 'comment.value = suggestion' in HTML
     assert 'acceptButton.addEventListener("click"' in HTML

@@ -53,6 +53,13 @@ test("sends only the comment to Workers AI and returns suggestion", async () => 
   assert.deepEqual(await response.json(), {suggestion: "Clearer sentence."});
   assert.equal(call.model, "@cf/meta/llama-3.2-3b-instruct");
   assert.equal(call.input.messages[1].content, "Clear sentence.");
+  const systemPrompt = call.input.messages[0].content;
+  assert.match(systemPrompt, /Correct only spelling, grammar, punctuation, capitalization, and obvious sentence-level clarity errors/);
+  assert.match(systemPrompt, /Do not add new feedback, examples, praise, criticism, recommendations, or explanations/);
+  assert.match(systemPrompt, /Preserve the original meaning, evaluation, tone, paragraph breaks, and placeholders/);
+  assert.match(systemPrompt, /If no correction is needed, return the original text exactly unchanged/);
+  assert.doesNotMatch(systemPrompt, /constructive professional tone/i);
+  assert.equal(call.input.temperature, 0);
   assert.doesNotMatch(JSON.stringify(call.input), /student|grade|answer context/i);
 });
 

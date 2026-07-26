@@ -190,7 +190,7 @@ The generator can create additional internal pages if content exceeds available 
 - Choice answers are set when an option button is clicked.
 - Pressing Enter advances except inside long-text fields.
 - No final review screen exists before PDF creation.
-- After PDF creation, normal navigation and editing controls are disabled.
+- After PDF creation, normal navigation and editing controls are disabled; **New blank form** reloads the unlocked app with empty in-memory state for the next student.
 
 ### PDF character behavior
 
@@ -220,11 +220,12 @@ Privacy-positive aspects of the current implementation:
 - No analytics in source.
 - PDF generation occurs locally in the browser.
 
-### AI copy-edit privacy and security (added 2026-07-16)
+### Copy-edit privacy, scope, and security (added 2026-07-16; narrowed 2026-07-24)
 
-- Every optional comment has **Ask AI / Copy edit** and a notice that only that comment is sent to Cloudflare Workers AI; reviewers are told not to include names or identifying information.
+- Every optional comment has **Copy edit**, a scope notice, and a notice that only that comment is sent to Cloudflare Workers AI; reviewers are told not to include names or identifying information.
+- The model is restricted to spelling, grammar, punctuation, capitalization, and obvious sentence-level clarity corrections. Its prompt forbids adding feedback, examples, praise, criticism, recommendations, or explanations; changing the evaluation, meaning, tone, paragraph breaks, or placeholders; and removing substantive content. If no correction is needed, it must return the original unchanged. Temperature is `0`.
 - Requests contain exactly `{ "comment": "..." }`, with a 3,000-character browser and Worker limit and a 12-second frontend timeout.
-- The original and suggestion are displayed together. The textarea is not replaced until **Accept**; **Try again** and **Keep original** are also available.
+- The original and copy-edited version are displayed together. The textarea is not replaced until **Accept**; **Copy edit again** and **Keep original** are also available.
 - The Worker accepts only `POST /copy-edit` plus required `OPTIONS` preflight. It rejects extra JSON keys, invalid JSON/content types, absent/unapproved origins, and over-length/blank comments.
 - Allowed origins are exactly `https://guysmileysells.github.io` and loopback localhost origins for development.
 - Responses use no-store/CORS/security headers and generic errors. Worker source contains no request/content logging.
