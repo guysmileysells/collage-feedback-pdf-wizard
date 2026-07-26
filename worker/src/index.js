@@ -1,7 +1,7 @@
 const ALLOWED_ORIGIN = "https://guysmileysells.github.io";
 const MAX_COMMENT_LENGTH = 3000;
 const MAX_INSTRUCTIONS_LENGTH = 500;
-const MODEL = "@cf/meta/llama-3.2-3b-instruct";
+const MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
 
 function countParagraphs(text) {
   return text.trim().split(/\n\s*\n/).length;

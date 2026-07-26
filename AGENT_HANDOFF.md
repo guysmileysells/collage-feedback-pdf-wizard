@@ -231,7 +231,7 @@ Privacy-positive aspects of the current implementation:
 - The Worker accepts only `POST /copy-edit` plus required `OPTIONS` preflight. It rejects extra JSON keys, invalid JSON/content types, absent/unapproved origins, and over-length/blank comments.
 - Allowed origins are exactly `https://guysmileysells.github.io` and loopback localhost origins for development.
 - Responses use no-store/CORS/security headers and generic errors. Worker source contains no request/content logging.
-- Workers AI binding `AI` uses the currently available, lightweight `@cf/meta/llama-3.2-3b-instruct`. Native `COPY_EDIT_RATE_LIMIT` limits each Cloudflare client-IP key to 10 requests per 60 seconds without a paid storage dependency.
+- Workers AI binding `AI` uses `@cf/meta/llama-3.3-70b-instruct-fp8-fast` for stronger instruction adherence. Native `COPY_EDIT_RATE_LIMIT` limits each Cloudflare client-IP key to 10 requests per 60 seconds without a paid storage dependency.
 - The configured browser endpoint is `https://collage-feedback-copy-edit.guysmileysells.workers.dev/copy-edit`.
 - The Worker and GitHub Pages frontend were deployed and live-verified on 2026-07-16. The public browser integration produced a real suggestion and preserved the original until explicit acceptance.
 

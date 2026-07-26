@@ -52,7 +52,7 @@ test("sends only the comment to Workers AI and returns suggestion", async () => 
   }}}));
   assert.equal(response.status, 200);
   assert.deepEqual(await response.json(), {suggestion: "Clearer sentence."});
-  assert.equal(call.model, "@cf/meta/llama-3.2-3b-instruct");
+  assert.equal(call.model, "@cf/meta/llama-3.3-70b-instruct-fp8-fast");
   assert.equal(call.input.messages[1].content, "Clear sentence.");
   const systemPrompt = call.input.messages[0].content;
   assert.match(systemPrompt, /Correct only spelling, grammar, punctuation, capitalization, and obvious sentence-level clarity errors/);
