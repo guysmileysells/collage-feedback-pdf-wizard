@@ -201,6 +201,13 @@ The `ascii()` helper normalizes curly quotes and long dashes, then strips charac
 - Some names and neighborhood labels may be degraded.
 - This is a known quality limitation, not a security feature.
 
+### Known PDF page-tree/printing risk (observed with Khushi feedback)
+
+- A completed four-page PDF printed pages 1, 2, and 4 as blank even though every page retained substantial text and rendered through MuPDF.
+- MuPDF reported `format error: too many kids in page tree` and `syntax error: expected object number` while opening the source PDF, indicating malformed PDF object/page-tree structure rather than missing feedback.
+- Rebuilding the document page-by-page into a clean page tree preserved exact extracted text on all four pages and produced a normally extractable repaired PDF.
+- The manual PDF serializer in `site/index.html` should receive a source-level structural review and regression test with a strict PDF parser. Browser preview success alone is not sufficient verification of print compatibility.
+
 ## 8. Access control and privacy reality
 
 The access gate hashes the four-digit code in browser JavaScript and compares it client-side. The current source comment explicitly identifies code `5656`.
