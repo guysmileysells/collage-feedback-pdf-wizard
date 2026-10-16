@@ -1,5 +1,13 @@
 # Collage Feedback PDF Wizard — Project Log
 
+## 2026-10-02 — PSCI 240 in-class essay form
+- Added a separate PSCI 240 form at `site/psci240/` without changing the PSCI 252 collage-and-essay workflow.
+- Derived the PSCI 240 rubric from three instructor-supplied marking corpora (Summer 2024, Winter 2025, and Fall 2025): thesis presence/quality, structured introduction, theorist interpretation, content of argument, argument structure/writing, direct-quotation requirements and quality, structured conclusion, percentage grade, and overall comments.
+- Added 14 steps: student name; thesis-present choice; seven 10-point Weak–Strong rubric sliders; three quotation/citation requirement choices; percentage grade; and optional overall comments.
+- Added an editable PSCI 240 comments bank organized into thesis, introduction, theorist interpretation, argument, structure/writing, quotations/citations, conclusion, and overall feedback. The language reflects recurring instructor comments but remains editable and does not automate substantive evaluation.
+- Preserved the guarded mechanical copy-edit workflow, dynamic PDF comment boxes, PDF preview/download, optional per-item comments, and one-click blank reset.
+- Added focused source tests in `tests/test_psci240_requirements.py` and JavaScript syntax checks.
+
 ## 2026-07-26
 - Recovered `Khushi_Feedback.pdf` after pages 1, 2, and 4 printed blank. The source contained all four pages' text but MuPDF reported a malformed page tree (`too many kids in page tree`). Rebuilt a clean four-page page tree without changing extracted text and saved `C:\Users\I9-10900KF\Documents\Khushi_Feedback_Repaired.pdf` plus a plain-text recovery copy. This establishes a remaining generator/printing compatibility risk requiring a source-level PDF-structure fix.
 - Narrowed the optional AI feature to mechanical copy editing only. The Worker now permits corrections to spelling, grammar, punctuation, capitalization, and obvious sentence-level clarity while explicitly prohibiting new feedback, examples, praise, criticism, recommendations, explanations, meaning changes, or substantive removal. The interface now says “Copy edit” and explains this limitation before use.
