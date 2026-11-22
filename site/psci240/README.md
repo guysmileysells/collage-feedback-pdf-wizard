@@ -41,6 +41,7 @@ The bank was synthesized from instructor-supplied PSCI 240 feedback from Summer 
 - Copy editing is limited to mechanics and clarity; the instructor must explicitly accept a suggestion.
 - Do not place student names or identifying information in comments submitted for copy editing.
 - A **New blank form** button resets the form for the next student while preserving the unlocked browser session.
+- PDF scale blocks reserve an explicit top gap before their headings so a scale heading cannot overlap a preceding table row or comment block.
 
 ## Route
 

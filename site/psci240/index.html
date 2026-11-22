@@ -633,6 +633,7 @@
       const textTopPadding = 20;
       const blockGap = 20;
       const scaleLabelTopGap = 18;
+      const scoreBlockTopGap = 14;
       const commentMaxChars = 102;
       const commentLineHeight = 14;
       const percentageGradeTopGap = 18;
@@ -693,8 +694,9 @@
       }
       function scoreBlock(numberedPrompt, score) {
         const promptLines = wrap(numberedPrompt, 82);
-        const blockH = 18 + promptLines.length * 11 + 28 + scaleLabelTopGap;
+        const blockH = scoreBlockTopGap + 18 + promptLines.length * 11 + 28 + scaleLabelTopGap;
         ensure(blockH);
+        y -= scoreBlockTopGap;
         promptLines.forEach((part) => {
           drawText(part, margin, y, 10, true);
           y -= 11;
